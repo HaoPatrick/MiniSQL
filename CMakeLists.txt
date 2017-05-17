@@ -3,5 +3,5 @@ project(db)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES main.cpp bpt.cpp)
+set(SOURCE_FILES main.cpp utils.h)
 add_executable(db ${SOURCE_FILES})
