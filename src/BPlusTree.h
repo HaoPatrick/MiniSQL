@@ -10,23 +10,29 @@
 //template<typename Key, typename Value>
 class Node;
 
+enum Type {
+    root,
+    leaf,
+    inner
+};
+
 //template<class Node>
 class Bucket {
 public:
     Bucket(int);
 
-    bool is_root;
-
-    bool is_leaf;
-    bool is_inner;
+    Type type;
 
     bool insert_to_cur_bucket(Node);
+
+    Bucket find_bucket(Node);
 
     void split_bucket();
 
     void print_bucket();
 
-private:
+    std::string string_bucket();
+
     int degree;
     Bucket *parent;
     std::vector<Node> nodes;
@@ -35,7 +41,7 @@ private:
 //template<typename Key, typename Value>
 class Node {
 public:
-    std::pair<int, std::string> nodes;
-    std::vector<Bucket *> pointers;
+    std::pair<int, std::string> value;
+    Bucket *pointers;
 };
 
