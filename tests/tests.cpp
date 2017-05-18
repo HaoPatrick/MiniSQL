@@ -3,7 +3,7 @@
 //
 #include "../src/BPlusTree.h"
 
-#define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
+//#define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
 
 #include "catch.hpp"
 
@@ -12,7 +12,7 @@ TEST_CASE("Init Test") {
     REQUIRE(bpt.degree == 4);
 }
 
-TEST_CASE("InsertTest") {
+TEST_CASE("Insert Test") {
     Bucket bpt(4);
     Node test_node;
     test_node.pointers = nullptr;
