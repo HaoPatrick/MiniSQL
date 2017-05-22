@@ -183,6 +183,20 @@ void BTreeNode::traverse() {
     }
 }
 
+void BTreeNode::traverse(std::string &result) {
+    int i;
+    for (i = 0; i < key_num; i++) {
+        if (!leaf) {
+            child_pointers[i]->traverse(result);
+        }
+        result += (" " + std::to_string(keys[i]));
+    }
+    // i=n
+    if (!leaf) {
+        child_pointers[i]->traverse(result);
+    }
+}
+
 BTreeNode *BTreeNode::search(int k) {
     int i = 0;
     while (i < key_num && k > keys[i]) {

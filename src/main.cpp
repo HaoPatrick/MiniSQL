@@ -62,5 +62,10 @@ int main(int argc, char *argv[]) {
     t.traverse();
     std::cout << std::endl;
 
+    std::string result = "";
+    t.traverse(result);
+    std::cout << result << std::endl;
+    t.traverse(result);
+    std::cout << result << std::endl;
     return 0;
 }

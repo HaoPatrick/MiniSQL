@@ -18,6 +18,9 @@ public:
 
     void traverse();
 
+    void traverse(std::string &);
+
+
     BTreeNode *search(int k);
 
     int findKey(int k);
@@ -58,6 +61,10 @@ public:
 
     void traverse() {
         if (root != NULL) root->traverse();
+    }
+
+    void traverse(std::string &result) {
+        if (root != NULL) root->traverse(result);
     }
 
     BTreeNode *search(int k) {
