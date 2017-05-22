@@ -5,14 +5,22 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 
 
 class BTreeNode {
     int *keys;
+    std::vector<int> v_keys;
     int min_degree; //minimum degree
+    std::vector<BTreeNode *> v_child_pointers;
     BTreeNode **child_pointers; //array of child pointers
     int key_num; //current number of keys
-    bool leaf; // Is true when node is leaf, else false
+    bool is_leaf; // Is true when node is leaf, else false
+    ~BTreeNode() {
+        delete (keys);
+        delete (child_pointers);
+    }
+
 public:
     BTreeNode(int _t, bool _leaf);
 
@@ -23,7 +31,7 @@ public:
 
     BTreeNode *search(int k);
 
-    int findKey(int k);
+    uint32_t findKey(int k);
 
     void insertNonFull(int k);
 
@@ -52,11 +60,11 @@ public:
 
 class BTree {
     BTreeNode *root;
-    int t; //minimum degree
+    int min_degree; //minimum degree
 public:
     BTree(int _t) {
         root = NULL;
-        t = _t;
+        min_degree = _t;
     }
 
     void traverse() {
@@ -69,6 +77,9 @@ public:
 
     BTreeNode *search(int k) {
         return (root == NULL) ? NULL : root->search(k);
+    }
+    ~BTree(){
+        delete(root);
     }
 
     void insert(int k);
