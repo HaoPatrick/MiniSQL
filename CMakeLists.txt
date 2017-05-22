@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(SOURCE_FILES src/main.cpp src/utils.h)
 
 
-add_library(db_LIB src/BPlusTree.h src/BPlusTree.cpp)
+add_library(db_LIB src/BTree.h src/BTree.cpp)
 add_library(db_catch tests/test_catch.cpp)
 
 
@@ -16,4 +16,4 @@ add_executable(db_test ${TEST_FILES})
 add_executable(db ${SOURCE_FILES})
 target_link_libraries(db db_LIB)
 target_link_libraries(db_test db_LIB db_catch)
-#target_link_libraries(db_test tests/test_catch.o )
+#target_link_libraries(db_test testsatch.o )/test_c
