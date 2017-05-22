@@ -9,16 +9,12 @@
 
 
 class BTreeNode {
-    int *keys;
     std::vector<int> v_keys;
     int min_degree; //minimum degree
     std::vector<BTreeNode *> v_child_pointers;
-    BTreeNode **child_pointers; //array of child pointers
     int key_num; //current number of keys
     bool is_leaf; // Is true when node is leaf, else false
     ~BTreeNode() {
-        delete (keys);
-        delete (child_pointers);
     }
 
 public:

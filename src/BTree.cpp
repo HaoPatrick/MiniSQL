@@ -7,9 +7,7 @@
 BTreeNode::BTreeNode(int _t, bool _leaf) {
     this->min_degree = _t;
     this->is_leaf = _leaf;
-    this->keys = new int[2 * min_degree - 1];
     this->v_keys.resize((unsigned int) (2 * min_degree - 1));
-    this->child_pointers = new BTreeNode *[2 * min_degree];
     this->v_child_pointers.resize((unsigned int) (2 * min_degree));
     this->key_num = 0;
 }
