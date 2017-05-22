@@ -6,7 +6,7 @@
 #include "catch.hpp"
 
 TEST_CASE("Insert Test") {
-    BTree t(3);
+    BTree<int> t(3);
     std::string result = "";
     t.insert(std::pair<int,int>(10,0));
     t.insert(std::pair<int,int>(20,0));
@@ -22,7 +22,7 @@ TEST_CASE("Insert Test") {
 
 
 TEST_CASE("Search Test") {
-    BTree t(3);
+    BTree<int> t(3);
     std::string result = "";
     t.insert(std::pair<int,int>(10,0));
     t.insert(std::pair<int,int>(20,0));
@@ -39,7 +39,7 @@ TEST_CASE("Search Test") {
 }
 
 TEST_CASE("Delete Test") {
-    BTree t(3);
+    BTree<int> t(3);
     std::string result = "";
     t.insert(std::pair<int,int>(1,0));
     t.insert(std::pair<int,int>(3,0));

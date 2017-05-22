@@ -2,7 +2,7 @@
 
 
 int main(int argc, char *argv[]) {
-    BTree t(3); // A B-Tree with minium degree 3
+    BTree<int> t(3); // A B-Tree with minium degree 3
     t.insert(std::pair<int,int>(1,0));
     t.insert(std::pair<int,int>(3,0));
     t.insert(std::pair<int,int>(7,0));

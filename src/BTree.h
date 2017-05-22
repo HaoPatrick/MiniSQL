@@ -7,31 +7,35 @@
 #include <iostream>
 #include <vector>
 
+template<typename T>
+class BTree;
 
+template<typename T>
 class BTreeNode {
-    std::vector<std::pair<int, int>> v_keys;
+    std::vector<std::pair<int, T>> v_keys;
     int min_degree; //minimum degree
-    std::vector<BTreeNode *> v_child_pointers;
+    std::vector<BTreeNode<T> *> v_child_pointers;
     int key_num; //current number of keys
     bool is_leaf; // Is true when node is leaf, else false
-    ~BTreeNode() {
-    }
 
 public:
-    BTreeNode(int _t, bool _leaf);
+    BTreeNode<T>(int _t, bool _leaf);
+
+    ~BTreeNode<T>() {
+    }
 
     void traverse();
 
     void traverse(std::string &);
 
 
-    BTreeNode *search(int k);
+    BTreeNode<T> *search(int k);
 
     uint32_t findKey(int k);
 
-    void insert_non_full(std::pair<int, int>);
+    void insert_non_full(std::pair<int, T>);
 
-    void split_child(int i, BTreeNode *y);
+    void split_child(int i, BTreeNode<T> *y);
 
     void remove(int k);
 
@@ -39,9 +43,9 @@ public:
 
     void remove_from_nonleaf(int idx);
 
-    std::pair<int, int> get_prev(int idx);
+    std::pair<int, T> get_prev(int idx);
 
-    std::pair<int, int> get_next(int idx);
+    std::pair<int, T> get_next(int idx);
 
     void fill(int idx);
 
@@ -51,14 +55,15 @@ public:
 
     void merge(int idx);
 
-    friend class BTree;
+    friend class BTree<T>;
 };
 
+template<typename T>
 class BTree {
-    BTreeNode *root;
+    BTreeNode<T> *root;
     int min_degree; //minimum degree
 public:
-    BTree(int _t) {
+    BTree<T>(int _t) {
         root = NULL;
         min_degree = _t;
     }
@@ -71,15 +76,21 @@ public:
         if (root != NULL) root->traverse(result);
     }
 
-    BTreeNode *search(int k) {
+    BTreeNode<T> *search(int k) {
         return (root == NULL) ? NULL : root->search(k);
     }
 
-    ~BTree() {
+    ~BTree<T>() {
         delete (root);
     }
 
-    void insert(std::pair<int, int>);
+    void insert(std::pair<int, T>);
 
     void remove(int k);
 };
+
+template
+class BTree<int>;
+
+template
+class BTreeNode<int>;
