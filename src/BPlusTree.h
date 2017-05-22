@@ -16,10 +16,13 @@ enum Type {
     inner
 };
 
+
 //template<class Node>
 class Bucket {
 public:
     Bucket(int);
+
+    Bucket();
 
     Type type;
 
@@ -35,8 +38,19 @@ public:
 
     int degree;
     Bucket *parent;
+    Bucket *smaller_pointer;
     std::vector<Node> nodes;
 };
+
+class BPT {
+public:
+    Bucket *root;
+
+    BPT() {
+//        this->root=new Bucket(4);
+    }
+};
+
 
 //template<typename Key, typename Value>
 class Node {
