@@ -14,7 +14,7 @@ BTreeNode::BTreeNode(int _t, bool _leaf) {
 
 uint32_t BTreeNode::findKey(int k) {
     uint32_t idx = 0;
-    while (idx < key_num && v_keys[idx] < k) {
+    while (idx < key_num && v_keys[idx].first < k) {
         idx += 1;
     }
     return idx;
@@ -22,7 +22,7 @@ uint32_t BTreeNode::findKey(int k) {
 
 void BTreeNode::remove(int k) {
     uint32_t idx = findKey(k);
-    if (idx < key_num && v_keys[idx] == k) {
+    if (idx < key_num && v_keys[idx].first == k) {
         if (is_leaf) {
             removeFromLeaf(idx);
         } else {
@@ -55,15 +55,15 @@ void BTreeNode::removeFromLeaf(int idx) {
 }
 
 void BTreeNode::removeFromNonLeaf(int idx) {
-    int k = v_keys[idx];
+    auto k = v_keys[idx].first;
     if (v_child_pointers[idx]->key_num >= min_degree) {
-        int pred = getPred(idx);
+        auto pred = getPred(idx);
         v_keys[idx] = pred;
-        v_child_pointers[idx]->remove(pred);
+        v_child_pointers[idx]->remove(pred.first);
     } else if (v_child_pointers[idx + 1]->key_num >= min_degree) {
-        int succ = getSucc(idx);
+        auto succ = getSucc(idx);
         v_keys[idx] = succ;
-        v_child_pointers[idx + 1]->remove(succ);
+        v_child_pointers[idx + 1]->remove(succ.first);
     } else {
         merge(idx);
         v_child_pointers[idx]->remove(k);
@@ -71,7 +71,7 @@ void BTreeNode::removeFromNonLeaf(int idx) {
     return;
 }
 
-int BTreeNode::getPred(int idx) {
+std::pair<int,int> BTreeNode::getPred(int idx) {
     BTreeNode *cur = v_child_pointers[idx];
     while (!cur->is_leaf) {
         cur = cur->v_child_pointers[cur->key_num];
@@ -79,7 +79,7 @@ int BTreeNode::getPred(int idx) {
     return cur->v_keys[cur->key_num - 1];
 }
 
-int BTreeNode::getSucc(int idx) {
+std::pair<int,int> BTreeNode::getSucc(int idx) {
     BTreeNode *cur = v_child_pointers[idx + 1];
     while (!cur->is_leaf) {
         cur = cur->v_child_pointers[0];
@@ -175,7 +175,7 @@ void BTreeNode::traverse() {
         if (!is_leaf) {
             v_child_pointers[i]->traverse();
         }
-        std::cout << " " << v_keys[i];
+        std::cout << " " << v_keys[i].first;
     }
     // i=n
     if (!is_leaf) {
@@ -189,7 +189,7 @@ void BTreeNode::traverse(std::string &result) {
         if (!is_leaf) {
             v_child_pointers[i]->traverse(result);
         }
-        result += (" " + std::to_string(v_keys[i]));
+        result += (" " + std::to_string(v_keys[i].first));
     }
     // i=n
     if (!is_leaf) {
@@ -199,10 +199,10 @@ void BTreeNode::traverse(std::string &result) {
 
 BTreeNode *BTreeNode::search(int k) {
     int i = 0;
-    while (i < key_num && k > v_keys[i]) {
+    while (i < key_num && k > v_keys[i].first) {
         i++;
     }
-    if (v_keys[i] == k) {
+    if (v_keys[i].first == k) {
         return this;
     }
     // Not find here
@@ -212,10 +212,10 @@ BTreeNode *BTreeNode::search(int k) {
     return v_child_pointers[i]->search(k);
 }
 
-void BTreeNode::insertNonFull(int k) {
+void BTreeNode::insertNonFull(std::pair<int,int> k) {
     int i = key_num - 1;
     if (is_leaf) {
-        while (i >= 0 && v_keys[i] > k) {
+        while (i >= 0 && v_keys[i].first > k.first) {
             v_keys[i + 1] = v_keys[i];
             i -= 1;
         }
@@ -259,7 +259,7 @@ void BTreeNode::splitChild(int i, BTreeNode *y) {
 }
 
 
-void BTree::insert(int k) {
+void BTree::insert(std::pair<int, int> k) {
     if (root == NULL) {
         root = new BTreeNode(min_degree, true);
         root->v_keys[0] = k;

@@ -9,7 +9,7 @@
 
 
 class BTreeNode {
-    std::vector<int> v_keys;
+    std::vector<std::pair<int, int>> v_keys;
     int min_degree; //minimum degree
     std::vector<BTreeNode *> v_child_pointers;
     int key_num; //current number of keys
@@ -29,7 +29,7 @@ public:
 
     uint32_t findKey(int k);
 
-    void insertNonFull(int k);
+    void insertNonFull(std::pair<int, int>);
 
     void splitChild(int i, BTreeNode *y);
 
@@ -39,9 +39,9 @@ public:
 
     void removeFromNonLeaf(int idx);
 
-    int getPred(int idx);
+    std::pair<int, int> getPred(int idx);
 
-    int getSucc(int idx);
+    std::pair<int, int> getSucc(int idx);
 
     void fill(int idx);
 
@@ -74,11 +74,12 @@ public:
     BTreeNode *search(int k) {
         return (root == NULL) ? NULL : root->search(k);
     }
-    ~BTree(){
-        delete(root);
+
+    ~BTree() {
+        delete (root);
     }
 
-    void insert(int k);
+    void insert(std::pair<int, int>);
 
     void remove(int k);
 };

@@ -3,30 +3,29 @@
 
 int main(int argc, char *argv[]) {
     BTree t(3); // A B-Tree with minium degree 3
-
-    t.insert(1);
-    t.insert(3);
-    t.insert(7);
-    t.insert(10);
-    t.insert(11);
-    t.insert(13);
-    t.insert(14);
-    t.insert(15);
-    t.insert(18);
-    t.insert(16);
-    t.insert(19);
-    t.insert(24);
-    t.insert(25);
-    t.insert(26);
-    t.insert(21);
-    t.insert(4);
-    t.insert(5);
-    t.insert(20);
-    t.insert(22);
-    t.insert(2);
-    t.insert(17);
-    t.insert(12);
-    t.insert(6);
+    t.insert(std::pair<int,int>(1,0));
+    t.insert(std::pair<int,int>(3,0));
+    t.insert(std::pair<int,int>(7,0));
+    t.insert(std::pair<int,int>(10,0));
+    t.insert(std::pair<int,int>(11,0));
+    t.insert(std::pair<int,int>(13,0));
+    t.insert(std::pair<int,int>(14,0));
+    t.insert(std::pair<int,int>(15,0));
+    t.insert(std::pair<int,int>(18,0));
+    t.insert(std::pair<int,int>(16,0));
+    t.insert(std::pair<int,int>(19,0));
+    t.insert(std::pair<int,int>(24,0));
+    t.insert(std::pair<int,int>(25,0));
+    t.insert(std::pair<int,int>(26,0));
+    t.insert(std::pair<int,int>(21,0));
+    t.insert(std::pair<int,int>(4,0));
+    t.insert(std::pair<int,int>(5,0));
+    t.insert(std::pair<int,int>(20,0));
+    t.insert(std::pair<int,int>(22,0));
+    t.insert(std::pair<int,int>(2,0));
+    t.insert(std::pair<int,int>(17,0));
+    t.insert(std::pair<int,int>(12,0));
+    t.insert(std::pair<int,int>(6,0));
 
     std::cout << "Traversal of tree constructed is\n";
     t.traverse();
