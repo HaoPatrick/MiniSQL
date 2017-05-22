@@ -29,25 +29,25 @@ public:
 
     uint32_t findKey(int k);
 
-    void insertNonFull(std::pair<int, int>);
+    void insert_non_full(std::pair<int, int>);
 
-    void splitChild(int i, BTreeNode *y);
+    void split_child(int i, BTreeNode *y);
 
     void remove(int k);
 
-    void removeFromLeaf(int idx);
+    void remove_from_leaf(int idx);
 
-    void removeFromNonLeaf(int idx);
+    void remove_from_nonleaf(int idx);
 
-    std::pair<int, int> getPred(int idx);
+    std::pair<int, int> get_prev(int idx);
 
-    std::pair<int, int> getSucc(int idx);
+    std::pair<int, int> get_next(int idx);
 
     void fill(int idx);
 
-    void borrowFromPrev(int idx);
+    void borrow_from_prev(int idx);
 
-    void borrowFromNext(int idx);
+    void borrow_from_next(int idx);
 
     void merge(int idx);
 

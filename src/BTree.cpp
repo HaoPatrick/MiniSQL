@@ -24,9 +24,9 @@ void BTreeNode::remove(int k) {
     uint32_t idx = findKey(k);
     if (idx < key_num && v_keys[idx].first == k) {
         if (is_leaf) {
-            removeFromLeaf(idx);
+            remove_from_leaf(idx);
         } else {
-            removeFromNonLeaf(idx);
+            remove_from_nonleaf(idx);
         }
     } else {
         if (is_leaf) {
@@ -46,7 +46,7 @@ void BTreeNode::remove(int k) {
     return;
 }
 
-void BTreeNode::removeFromLeaf(int idx) {
+void BTreeNode::remove_from_leaf(int idx) {
     for (int i = idx + 1; i < key_num; i++) {
         v_keys[i - 1] = v_keys[i];
     }
@@ -54,14 +54,14 @@ void BTreeNode::removeFromLeaf(int idx) {
     return;
 }
 
-void BTreeNode::removeFromNonLeaf(int idx) {
+void BTreeNode::remove_from_nonleaf(int idx) {
     auto k = v_keys[idx].first;
     if (v_child_pointers[idx]->key_num >= min_degree) {
-        auto pred = getPred(idx);
+        auto pred = get_prev(idx);
         v_keys[idx] = pred;
         v_child_pointers[idx]->remove(pred.first);
     } else if (v_child_pointers[idx + 1]->key_num >= min_degree) {
-        auto succ = getSucc(idx);
+        auto succ = get_next(idx);
         v_keys[idx] = succ;
         v_child_pointers[idx + 1]->remove(succ.first);
     } else {
@@ -71,7 +71,7 @@ void BTreeNode::removeFromNonLeaf(int idx) {
     return;
 }
 
-std::pair<int,int> BTreeNode::getPred(int idx) {
+std::pair<int,int> BTreeNode::get_prev(int idx) {
     BTreeNode *cur = v_child_pointers[idx];
     while (!cur->is_leaf) {
         cur = cur->v_child_pointers[cur->key_num];
@@ -79,7 +79,7 @@ std::pair<int,int> BTreeNode::getPred(int idx) {
     return cur->v_keys[cur->key_num - 1];
 }
 
-std::pair<int,int> BTreeNode::getSucc(int idx) {
+std::pair<int,int> BTreeNode::get_next(int idx) {
     BTreeNode *cur = v_child_pointers[idx + 1];
     while (!cur->is_leaf) {
         cur = cur->v_child_pointers[0];
@@ -89,9 +89,9 @@ std::pair<int,int> BTreeNode::getSucc(int idx) {
 
 void BTreeNode::fill(int idx) {
     if (idx != 0 && v_child_pointers[idx - 1]->key_num >= min_degree) {
-        borrowFromPrev(idx);
+        borrow_from_prev(idx);
     } else if (idx != key_num && v_child_pointers[idx + 1]->key_num >= min_degree) {
-        borrowFromNext(idx);
+        borrow_from_next(idx);
     } else {
         if (idx != key_num) {
             merge(idx);
@@ -102,7 +102,7 @@ void BTreeNode::fill(int idx) {
     return;
 }
 
-void BTreeNode::borrowFromPrev(int idx) {
+void BTreeNode::borrow_from_prev(int idx) {
     BTreeNode *child = v_child_pointers[idx];
     BTreeNode *sibling = v_child_pointers[idx - 1];
     for (int i = child->key_num - 1; i >= 0; i--) {
@@ -123,7 +123,7 @@ void BTreeNode::borrowFromPrev(int idx) {
     return;
 }
 
-void BTreeNode::borrowFromNext(int idx) {
+void BTreeNode::borrow_from_next(int idx) {
     BTreeNode *child = v_child_pointers[idx];
     BTreeNode *sibling = v_child_pointers[idx + 1];
 
@@ -212,7 +212,7 @@ BTreeNode *BTreeNode::search(int k) {
     return v_child_pointers[i]->search(k);
 }
 
-void BTreeNode::insertNonFull(std::pair<int,int> k) {
+void BTreeNode::insert_non_full(std::pair<int, int> k) {
     int i = key_num - 1;
     if (is_leaf) {
         while (i >= 0 && v_keys[i].first > k.first) {
@@ -226,16 +226,16 @@ void BTreeNode::insertNonFull(std::pair<int,int> k) {
             i -= 1;
         }
         if (v_child_pointers[i + 1]->key_num == 2 * min_degree - 1) {
-            splitChild(i + 1, v_child_pointers[i + 1]);
+            split_child(i + 1, v_child_pointers[i + 1]);
             if (v_keys[i + 1] < k) {
                 i += 1;
             }
         }
-        v_child_pointers[i + 1]->insertNonFull(k);
+        v_child_pointers[i + 1]->insert_non_full(k);
     }
 }
 
-void BTreeNode::splitChild(int i, BTreeNode *y) {
+void BTreeNode::split_child(int i, BTreeNode *y) {
     BTreeNode *z = new BTreeNode(y->min_degree, y->is_leaf);
     z->key_num = min_degree - 1;
     for (int j = 0; j < min_degree - 1; j++) {
@@ -268,16 +268,16 @@ void BTree::insert(std::pair<int, int> k) {
         if (root->key_num == 2 * min_degree - 1) {
             BTreeNode *s = new BTreeNode(min_degree, false);
             s->v_child_pointers[0] = root;
-            s->splitChild(0, root);
+            s->split_child(0, root);
 
             int i = 0;
             if (s->v_keys[0] < k) {
                 i += 1;
             }
-            s->v_child_pointers[i]->insertNonFull(k);
+            s->v_child_pointers[i]->insert_non_full(k);
             root = s;
         } else {
-            root->insertNonFull(k);
+            root->insert_non_full(k);
         }
     }
 }
