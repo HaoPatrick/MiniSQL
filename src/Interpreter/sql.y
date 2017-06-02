@@ -271,15 +271,14 @@ void emit(char *s, ...);
 %token FDATE_ADD FDATE_SUB
 %token FCOUNT
 
-%type <intval> select_opts select_expr_list
+%type <intval>  select_expr_list
 %type <intval> val_list opt_val_list 
 %type <intval> table_references
 %type <intval> column_list
-%type <intval> index_list opt_for_join
 
 %type <intval> delete_opts delete_list
 %type <intval> insert_opts insert_vals insert_vals_list
-%type <intval> insert_asgn_list opt_if_not_exists update_opts update_asgn_list
+%type <intval> insert_asgn_list 
 %type <intval> opt_temporary opt_length opt_binary opt_uz 
 %type <intval> column_atts data_type opt_ignore_replace create_col_list
 
@@ -296,12 +295,12 @@ stmt_list: stmt ';' {printf("> ");}
 stmt: select_stmt { emit("STMT"); }
    ;
 
-select_stmt: SELECT select_opts select_expr_list
-                        { emit("SELECTNODATA %d %d", $2, $3); } ;
-    | SELECT select_opts select_expr_list
+select_stmt: SELECT  select_expr_list
+                        { emit("SELECTNODATA %d",  $2); } ;
+    | SELECT  select_expr_list
      FROM table_references
      opt_where
-     { emit("SELECT %d %d %d", $2, $3, $5); } ;
+     { emit("SELECT %d  %d", $2, $4); } ;
 ;
 
 opt_where: /* nil */ 
@@ -311,17 +310,12 @@ column_list: NAME { emit("COLUMN %s", $1); free($1); $$ = 1; }
   | column_list ',' NAME  { emit("COLUMN %s", $3); free($3); $$ = $1 + 1; }
   ;
 
-select_opts:                          { $$ = 0; }
-| select_opts ALL                 { if($$ & 01) yyerror("duplicate ALL option"); $$ = $1 | 01; }
-| select_opts DISTINCT            { if($$ & 02) yyerror("duplicate DISTINCT option"); $$ = $1 | 02; }
-    ;
-
 select_expr_list: select_expr { $$ = 1; }
     | select_expr_list ',' select_expr {$$ = $1 + 1; }
     | '*' { emit("SELECTALL"); $$ = 1; }
     ;
 
-select_expr: expr opt_as_alias ;
+select_expr: expr ;
 
 table_references:    table_reference { $$ = 1; }
     | table_references ',' table_reference { $$ = $1 + 1; }
@@ -331,43 +325,8 @@ table_reference:  table_factor
 ;
 
 table_factor:
-    NAME opt_as_alias index_hint { emit("TABLE %s", $1); free($1); }
-  | NAME '.' NAME opt_as_alias index_hint { emit("TABLE %s.%s", $1, $3);
-                               free($1); free($3); }
-  | table_subquery opt_as NAME { emit("SUBQUERYAS %s", $3); free($3); }
-  | '(' table_references ')' { emit("TABLEREFERENCES %d", $2); }
-  ;
+    NAME 
 
-opt_as: AS 
-  | /* nil */
-  ;
-
-opt_as_alias: AS NAME { emit ("ALIAS %s", $2); free($2); }
-  | NAME              { emit ("ALIAS %s", $1); free($1); }
-  | /* nil */
-  ;
-
-
-index_hint:
-     USE KEY opt_for_join '(' index_list ')'
-                  { emit("INDEXHINT %d %d", $5, 010+$3); }
-   | IGNORE KEY opt_for_join '(' index_list ')'
-                  { emit("INDEXHINT %d %d", $5, 020+$3); }
-   | FORCE KEY opt_for_join '(' index_list ')'
-                  { emit("INDEXHINT %d %d", $5, 030+$3); }
-   | /* nil */
-   ;
-
-opt_for_join: FOR JOIN { $$ = 1; }
-   | /* nil */ { $$ = 0; }
-   ;
-
-index_list: NAME  { emit("INDEX %s", $1); free($1); $$ = 1; }
-   | index_list ',' NAME { emit("INDEX %s", $3); free($3); $$ = $1 + 1; }
-   ;
-
-table_subquery: '(' select_stmt ')' { emit("SUBQUERY"); }
-   ;
 
    /* statements: delete statement */
 
@@ -461,76 +420,37 @@ insert_asgn_list:
                  emit("DEFAULT"); emit("ASSIGN %s", $3); free($3); $$ = $1 + 1; }
    ;
 
-
-/** update **/
-stmt: update_stmt { emit("STMT"); }
-   ;
-
-update_stmt: UPDATE update_opts table_references
-    SET update_asgn_list
-    opt_where
-    { emit("UPDATE %d %d %d", $2, $3, $5); }
-;
-
-update_opts: /* nil */ { $$ = 0; }
-   | insert_opts LOW_PRIORITY { $$ = $1 | 01 ; }
-   | insert_opts IGNORE { $$ = $1 | 010 ; }
-   ;
-
-update_asgn_list:
-     NAME COMPARISON expr 
-       { if ($2 != 4) yyerror("bad insert assignment to %s", $1);
-	 emit("ASSIGN %s", $1); free($1); $$ = 1; }
-   | NAME '.' NAME COMPARISON expr 
-       { if ($4 != 4) yyerror("bad insert assignment to %s", $1);
-	 emit("ASSIGN %s.%s", $1, $3); free($1); free($3); $$ = 1; }
-   | update_asgn_list ',' NAME COMPARISON expr
-       { if ($4 != 4) yyerror("bad insert assignment to %s", $3);
-	 emit("ASSIGN %s.%s", $3); free($3); $$ = $1 + 1; }
-   | update_asgn_list ',' NAME '.' NAME COMPARISON expr
-       { if ($6 != 4) yyerror("bad insert assignment to %s.$s", $3, $5);
-	 emit("ASSIGN %s.%s", $3, $5); free($3); free($5); $$ = 1; }
-   ;
-
-
-
-opt_if_not_exists:  /* nil */ { $$ = 0; }
-   | IF EXISTS           { if(!$2)yyerror("IF EXISTS doesn't exist");
-                        $$ = $2; /* NOT EXISTS hack */ }
-   ;
-
-
    /** create table **/
 stmt: create_table_stmt { emit("STMT"); }
    ;
 
-create_table_stmt: CREATE opt_temporary TABLE opt_if_not_exists NAME
-   '(' create_col_list ')' { emit("CREATE %d %d %d %s", $2, $4, $7, $5); free($5); }
+create_table_stmt: CREATE opt_temporary TABLE NAME
+   '(' create_col_list ')' { emit("CREATE %d %d %s", $2, $6, $4); free($4); }
    ;
 
-create_table_stmt: CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME
-   '(' create_col_list ')' { emit("CREATE %d %d %d %s.%s", $2, $4, $9, $5, $7);
-                          free($5); free($7); }
+create_table_stmt: CREATE opt_temporary TABLE NAME '.' NAME
+   '(' create_col_list ')' { emit("CREATE %d %d %s.%s", $2, $8, $4, $6);
+                          free($4); free($6); }
    ;
 
-create_table_stmt: CREATE opt_temporary TABLE opt_if_not_exists NAME
+create_table_stmt: CREATE opt_temporary TABLE NAME
    '(' create_col_list ')'
-create_select_statement { emit("CREATESELECT %d %d %d %s", $2, $4, $7, $5); free($5); }
+create_select_statement { emit("CREATESELECT %d %d %s", $2, $6, $4); free($4); }
     ;
 
-create_table_stmt: CREATE opt_temporary TABLE opt_if_not_exists NAME
-   create_select_statement { emit("CREATESELECT %d %d 0 %s", $2, $4, $5); free($5); }
+create_table_stmt: CREATE opt_temporary TABLE NAME
+   create_select_statement { emit("CREATESELECT %d 0 %s", $2, $4); free($4); }
     ;
 
-create_table_stmt: CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME
+create_table_stmt: CREATE opt_temporary TABLE  NAME '.' NAME
    '(' create_col_list ')'
-   create_select_statement  { emit("CREATESELECT %d %d 0 %s.%s", $2, $4, $5, $7);
-                              free($5); free($7); }
+   create_select_statement  { emit("CREATESELECT %d 0 %s.%s", $2, $4, $6);
+                              free($4); free($6); }
     ;
 
-create_table_stmt: CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME
-   create_select_statement { emit("CREATESELECT %d %d 0 %s.%s", $2, $4, $5, $7);
-                          free($5); free($7); }
+create_table_stmt: CREATE opt_temporary TABLE NAME '.' NAME
+   create_select_statement { emit("CREATESELECT %d 0 %s.%s", $2, $4, $6);
+                          free($4); free($6); }
     ;
 
 create_col_list: create_definition { $$ = 1; }
@@ -588,7 +508,7 @@ data_type:
    ;
 
 
-create_select_statement: opt_ignore_replace opt_as select_stmt { emit("CREATESELECT %d", $1); }
+create_select_statement: opt_ignore_replace  select_stmt { emit("CREATESELECT %d", $1); }
    ;
 
 opt_ignore_replace: /* nil */ { $$ = 0; }
