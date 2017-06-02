@@ -279,7 +279,7 @@ void emit(char *s, ...);
 %type <intval> delete_opts delete_list
 %type <intval> insert_opts insert_vals insert_vals_list
 %type <intval> insert_asgn_list 
-%type <intval> opt_temporary opt_length opt_binary opt_uz 
+%type <intval>  opt_length opt_binary opt_uz 
 %type <intval> column_atts data_type create_col_list
 
 %start stmt_list
@@ -428,6 +428,18 @@ create_index_stmt: CREATE KEY NAME ON NAME
    '(' NAME ')' { emit("CREATEIDX %s %s %s", $3,$5, $7); free($7); free($3);free($5); }
    ;
 
+   /** drop index **/
+stmt: drop_index_stmt {emit("STMT");}
+    ;
+
+drop_index_stmt: DROP KEY NAME {emit("DROPIDX %s",$3);free($3);}
+    ;
+
+   /** drop table **/
+stmt: drop_table_stmt {emit("STMT");}
+    ;
+drop_table_stmt: DROP TABLE NAME {emit("DROPTABLE %s",$3);free($3);}
+    ;
 
    /** create table **/
 stmt: create_table_stmt { emit("STMT"); }
@@ -491,10 +503,6 @@ data_type:
    | TEXT opt_binary opt_csc { $$ = 171000 + $2; }
    ;
 
-
-opt_temporary:   /* nil */ { $$ = 0; }
-   | TEMPORARY { $$ = 1;}
-   ;
 
    /**** expressions ****/
 
