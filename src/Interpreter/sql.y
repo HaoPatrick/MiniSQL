@@ -1,6 +1,6 @@
 
 %{
-#include "hlh.h"
+#include "sql_func.h"
 
 void yyerror(char *s, ...);
 void emit(char *s, ...);

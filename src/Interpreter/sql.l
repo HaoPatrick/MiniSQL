@@ -1,6 +1,6 @@
 %option noyywrap nodefault yylineno case-insensitive
 %{
-#include "pmysql.tab.h"
+#include "sql.tab.h"
 #include <stdarg.h>
 #include <string.h>
 
