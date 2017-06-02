@@ -280,7 +280,7 @@ void emit(char *s, ...);
 %type <intval> insert_opts insert_vals insert_vals_list
 %type <intval> insert_asgn_list 
 %type <intval> opt_temporary opt_length opt_binary opt_uz 
-%type <intval> column_atts data_type opt_ignore_replace create_col_list
+%type <intval> column_atts data_type create_col_list
 
 %start stmt_list
 
@@ -420,38 +420,22 @@ insert_asgn_list:
                  emit("DEFAULT"); emit("ASSIGN %s", $3); free($3); $$ = $1 + 1; }
    ;
 
+   /** create index **/
+stmt: create_index_stmt { emit("STMT"); }
+   ;
+
+create_index_stmt: CREATE KEY NAME ON NAME
+   '(' NAME ')' { emit("CREATEIDX %s %s %s", $3,$5, $7); free($7); free($3);free($5); }
+   ;
+
+
    /** create table **/
 stmt: create_table_stmt { emit("STMT"); }
    ;
 
-create_table_stmt: CREATE opt_temporary TABLE NAME
-   '(' create_col_list ')' { emit("CREATE %d %d %s", $2, $6, $4); free($4); }
+create_table_stmt: CREATE TABLE NAME
+   '(' create_col_list ')' { emit("CREATETABLE %s", $3); free($3); }
    ;
-
-create_table_stmt: CREATE opt_temporary TABLE NAME '.' NAME
-   '(' create_col_list ')' { emit("CREATE %d %d %s.%s", $2, $8, $4, $6);
-                          free($4); free($6); }
-   ;
-
-create_table_stmt: CREATE opt_temporary TABLE NAME
-   '(' create_col_list ')'
-create_select_statement { emit("CREATESELECT %d %d %s", $2, $6, $4); free($4); }
-    ;
-
-create_table_stmt: CREATE opt_temporary TABLE NAME
-   create_select_statement { emit("CREATESELECT %d 0 %s", $2, $4); free($4); }
-    ;
-
-create_table_stmt: CREATE opt_temporary TABLE  NAME '.' NAME
-   '(' create_col_list ')'
-   create_select_statement  { emit("CREATESELECT %d 0 %s.%s", $2, $4, $6);
-                              free($4); free($6); }
-    ;
-
-create_table_stmt: CREATE opt_temporary TABLE NAME '.' NAME
-   create_select_statement { emit("CREATESELECT %d 0 %s.%s", $2, $4, $6);
-                          free($4); free($6); }
-    ;
 
 create_col_list: create_definition { $$ = 1; }
     | create_col_list ',' create_definition { $$ = $1 + 1; }
@@ -507,14 +491,6 @@ data_type:
    | TEXT opt_binary opt_csc { $$ = 171000 + $2; }
    ;
 
-
-create_select_statement: opt_ignore_replace  select_stmt { emit("CREATESELECT %d", $1); }
-   ;
-
-opt_ignore_replace: /* nil */ { $$ = 0; }
-   | IGNORE { $$ = 1; }
-   | REPLACE { $$ = 2; }
-   ;
 
 opt_temporary:   /* nil */ { $$ = 0; }
    | TEMPORARY { $$ = 1;}
