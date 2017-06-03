@@ -6,8 +6,8 @@ set(CMAKE_CXX_STANDARD 11)
 set(SOURCE_FILES src/main.cpp src/IndexManager/utils.h)
 
 
-add_library(db_LIB src/IndexManager/BTree.h src/IndexManager/BTree.cpp)
-add_library(db_catch tests/test_catch.cpp)
+add_library(lib_tree src/IndexManager/BTree.h src/IndexManager/BTree.cpp)
+add_library(lib_catch tests/test_catch.cpp)
 
 add_library(lib_buffer src/BufferManager/Buffer.cpp src/BufferManager/Buffer.h)
 
@@ -19,5 +19,5 @@ add_executable(db ${SOURCE_FILES})
 add_executable(db_buffer ${SOURCE_FILES})
 
 target_link_libraries(db lib_buffer)
-target_link_libraries(db_test db_LIB db_catch)
-#target_link_libraries(db_test testsatch.o )/test_c
+target_link_libraries(db_test lib_tree lib_catch)
+#target_link_libraries(lib_tree lib_buffer)

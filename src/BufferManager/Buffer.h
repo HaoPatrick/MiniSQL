@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <fstream>
+//#include "../IndexManager/BTree.h"
 
 #define BLOCK_SIZE 4096
 #define FILE_PATH "db.hlh"
@@ -18,6 +19,7 @@ enum FileType {
 
 struct DBHeader {
     uint8_t ultimate_value;
+    uint32_t count;
     char db_name[32];
     FileType type;
     uint32_t item_size;
@@ -51,6 +53,8 @@ public:
     }
 
     void read_data(uint32_t, SampleRecord &record);
+
+//    BTree<int> build_tree();
 
     void write_sample_data(DBHeader &, SampleRecord &);
 
