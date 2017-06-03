@@ -5,51 +5,52 @@
 #include <cstring>
 #include "Buffer.h"
 
-Buffer::Buffer(std::string file_path) {
-    std::ifstream in_file(file_path, std::ios::binary);
+Buffer::Buffer(char *file_path) : in_file(file_path, std::ios::binary),
+                                  out_file(file_path, std::ios::binary | std::ios::app | std::ios::out) {
     in_file.read(reinterpret_cast<char *>(&DB_file_header), sizeof(DB_file_header));
-    if (DB_file_header.header1 != 42) {
+    if (DB_file_header.ultimate_value != 42) {
         this->valid = false;
     }
-    std::cout << DB_file_header.db_name << std::endl;
 }
 
 Buffer::Buffer() {
-    std::ofstream out_file(FILE_PATH, std::ios::binary);
-    DB_file_header.header1 = 42;
+    out_file.clear();
+    DB_file_header.ultimate_value = 42;
     strncpy(DB_file_header.db_name, "DB HLH", sizeof(DB_file_header.db_name) - 1);
     out_file.write(reinterpret_cast<char *>(&this->DB_file_header), sizeof(DB_file_header));
-    out_file.close();
 }
 
-void Buffer::write_sample_data() {
+void Buffer::write_sample_data(DBHeader &test_header, SampleRecord &test_data) {
     std::ofstream out_file(FILE_PATH, std::ios::binary);
-    SampleRecord test_data;
-    strncpy(test_data.title, "Great wbx", sizeof(test_data.title) - 1);
-    strncpy(test_data.comment, "Hey wbx", sizeof(test_data.comment) - 1);
-    test_data.index = 42;
-    for (auto i = 0; i < 100; i++) {
+    out_file.write(reinterpret_cast<char *>(&test_header), sizeof(test_header));
+
+    for (auto i = 0; i < 3; i++) {
         test_data.views = (uint32_t) i;
         out_file.write(reinterpret_cast<char *>(&test_data), sizeof(test_data));
     }
-    out_file.close();
 }
 
-void Buffer::read_sample_data() {
-    std::ifstream in_file(FILE_PATH, std::ios::binary);
-    SampleRecord record;
-    for (auto i = 0; i < 100; i++) {
-        in_file.read(reinterpret_cast<char *>(&record), sizeof(record));
-        std::cout << record.title << record.comment << record.views << record.index << std::endl;
+void Buffer::read_data(uint32_t index, SampleRecord &record) {
+    in_file.clear();
+    in_file.seekg(0, std::ios::beg);
+    DBHeader header;
+    in_file.read(reinterpret_cast<char *>(&header), sizeof(header));
+    std::cout << header.db_name << header.type << header.ultimate_value << std::endl;
+    if (sizeof(record) != header.item_size) {
+        return;
     }
-    in_file.close();
-}
 
-void Buffer::read_sample_data(uint32_t index) {
-    std::ifstream in_file(FILE_PATH, std::ios::binary);
-    in_file.seekg(index * sizeof(SampleRecord));
-    SampleRecord record;
+    in_file.seekg(index * sizeof(record) + sizeof(header));
     in_file.read(reinterpret_cast<char * >(&record), sizeof(record));
     std::cout << record.title << record.views << std::endl;
-    in_file.close();
+}
+
+void Buffer::append_data(SampleRecord record, DBHeader header) {
+    if (DB_file_header.item_size != sizeof(record) ||
+        DB_file_header.type != header.type) {
+        return;
+    }
+    out_file.clear();
+    out_file.write(reinterpret_cast<char *>(&record), sizeof(record));
+    out_file.close();
 }

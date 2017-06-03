@@ -10,11 +10,18 @@
 #define BLOCK_SIZE 4096
 #define FILE_PATH "db.hlh"
 
-struct TempHeader {
-    uint8_t header1;
+enum FileType {
+    table,
+    index,
+    catalog
+};
+
+struct DBHeader {
+    uint8_t ultimate_value;
     char db_name[32];
-    uint8_t header3;
-    uint8_t header4;
+    FileType type;
+    uint32_t item_size;
+    int ava_slot[32];
 };
 
 struct SampleRecord {
@@ -26,11 +33,16 @@ struct SampleRecord {
 
 class Buffer {
 public:
-    Buffer(std::string);
+    Buffer(char *);
 
     Buffer();
 
-    TempHeader get_header() {
+    ~Buffer() {
+        in_file.close();
+        out_file.close();
+    }
+
+    DBHeader get_header() {
         return DB_file_header;
     }
 
@@ -38,14 +50,16 @@ public:
         return valid;
     }
 
-    void read_sample_data();
+    void read_data(uint32_t, SampleRecord &record);
 
-    void read_sample_data(uint32_t);
+    void write_sample_data(DBHeader &, SampleRecord &);
 
-    void write_sample_data();
+    void append_data(SampleRecord, DBHeader);
 
 private:
-    TempHeader DB_file_header;
+    DBHeader DB_file_header;
     bool valid;
+    std::ifstream in_file;
+    std::ofstream out_file;
 };
 
