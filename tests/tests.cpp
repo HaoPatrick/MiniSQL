@@ -1,7 +1,7 @@
 //
 // Created by Haoxiangpeng on 5/18/2017.
 //
-#include "../src/BTree.h"
+#include "../src/Indexmanager/BTree.h"
 
 #include "catch.hpp"
 
