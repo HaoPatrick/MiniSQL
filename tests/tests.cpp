@@ -27,13 +27,13 @@ TEST_CASE("Search Test") {
     t.insert(std::pair<int,int>(10,0));
     t.insert(std::pair<int,int>(20,0));
     t.insert(std::pair<int,int>(5,0));
-    t.insert(std::pair<int,int>(6,0));
+    t.insert(std::pair<int,int>(6,10));
     t.insert(std::pair<int,int>(12,0));
     t.insert(std::pair<int,int>(30,0));
     t.insert(std::pair<int,int>(7,0));
     t.insert(std::pair<int,int>(17,0));
     int k = 6;
-    REQUIRE(t.search(k) != NULL);
+    REQUIRE(t.search(k)->second == 10);
     k = 19;
     REQUIRE(t.search(k) == NULL);
 }

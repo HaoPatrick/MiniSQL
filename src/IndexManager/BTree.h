@@ -29,7 +29,7 @@ public:
     void traverse(std::string &);
 
 
-    BTreeNode<T> *search(int k);
+    std::pair<int, T> *search(int k);
 
     uint32_t findKey(int k);
 
@@ -76,8 +76,12 @@ public:
         if (root != NULL) root->traverse(result);
     }
 
-    BTreeNode<T> *search(int k) {
-        return (root == NULL) ? NULL : root->search(k);
+    std::pair<int, T> *search(int k) {
+        if (root) {
+            return root->search(k);
+        } else {
+            return NULL;
+        }
     }
 
     ~BTree<T>() {

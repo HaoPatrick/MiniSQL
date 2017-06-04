@@ -20,4 +20,4 @@ add_executable(db_buffer ${SOURCE_FILES})
 
 target_link_libraries(db lib_buffer)
 target_link_libraries(db_test lib_tree lib_catch)
-#target_link_libraries(lib_tree lib_buffer)
+target_link_libraries(db lib_tree)

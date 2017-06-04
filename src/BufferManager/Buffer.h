@@ -6,7 +6,7 @@
 
 #include <iostream>
 #include <fstream>
-//#include "../IndexManager/BTree.h"
+#include "../IndexManager/BTree.h"
 
 #define BLOCK_SIZE 4096
 #define FILE_PATH "db.hlh"
@@ -54,7 +54,7 @@ public:
 
     void read_data(uint32_t, SampleRecord &record);
 
-//    BTree<int> build_tree();
+    BTree<int> build_tree();
 
     void write_sample_data(DBHeader &, SampleRecord &);
 

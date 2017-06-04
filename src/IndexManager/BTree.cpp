@@ -4,7 +4,7 @@
 
 #include "BTree.h"
 
-template <class T>
+template<class T>
 BTreeNode<T>::BTreeNode(int _t, bool _leaf) {
     this->min_degree = _t;
     this->is_leaf = _leaf;
@@ -13,7 +13,7 @@ BTreeNode<T>::BTreeNode(int _t, bool _leaf) {
     this->key_num = 0;
 }
 
-template <class T>
+template<class T>
 uint32_t BTreeNode<T>::findKey(int k) {
     uint32_t idx = 0;
     while (idx < key_num && v_keys[idx].first < k) {
@@ -22,7 +22,7 @@ uint32_t BTreeNode<T>::findKey(int k) {
     return idx;
 }
 
-template <class T>
+template<class T>
 void BTreeNode<T>::remove(int k) {
     uint32_t idx = findKey(k);
     if (idx < key_num && v_keys[idx].first == k) {
@@ -49,7 +49,7 @@ void BTreeNode<T>::remove(int k) {
     return;
 }
 
-template <class T>
+template<class T>
 void BTreeNode<T>::remove_from_leaf(int idx) {
     for (int i = idx + 1; i < key_num; i++) {
         v_keys[i - 1] = v_keys[i];
@@ -58,7 +58,7 @@ void BTreeNode<T>::remove_from_leaf(int idx) {
     return;
 }
 
-template <class T>
+template<class T>
 void BTreeNode<T>::remove_from_nonleaf(int idx) {
     auto k = v_keys[idx].first;
     if (v_child_pointers[idx]->key_num >= min_degree) {
@@ -76,8 +76,8 @@ void BTreeNode<T>::remove_from_nonleaf(int idx) {
     return;
 }
 
-template <class T>
-std::pair<int,T> BTreeNode<T>::get_prev(int idx) {
+template<class T>
+std::pair<int, T> BTreeNode<T>::get_prev(int idx) {
     BTreeNode<T> *cur = v_child_pointers[idx];
     while (!cur->is_leaf) {
         cur = cur->v_child_pointers[cur->key_num];
@@ -85,8 +85,8 @@ std::pair<int,T> BTreeNode<T>::get_prev(int idx) {
     return cur->v_keys[cur->key_num - 1];
 }
 
-template <class T>
-std::pair<int,T> BTreeNode<T>::get_next(int idx) {
+template<class T>
+std::pair<int, T> BTreeNode<T>::get_next(int idx) {
     BTreeNode<T> *cur = v_child_pointers[idx + 1];
     while (!cur->is_leaf) {
         cur = cur->v_child_pointers[0];
@@ -94,7 +94,7 @@ std::pair<int,T> BTreeNode<T>::get_next(int idx) {
     return cur->v_keys[0];
 }
 
-template <class T>
+template<class T>
 void BTreeNode<T>::fill(int idx) {
     if (idx != 0 && v_child_pointers[idx - 1]->key_num >= min_degree) {
         borrow_from_prev(idx);
@@ -110,7 +110,7 @@ void BTreeNode<T>::fill(int idx) {
     return;
 }
 
-template <class T>
+template<class T>
 void BTreeNode<T>::borrow_from_prev(int idx) {
     BTreeNode<T> *child = v_child_pointers[idx];
     BTreeNode<T> *sibling = v_child_pointers[idx - 1];
@@ -132,7 +132,7 @@ void BTreeNode<T>::borrow_from_prev(int idx) {
     return;
 }
 
-template <class T>
+template<class T>
 void BTreeNode<T>::borrow_from_next(int idx) {
     BTreeNode<T> *child = v_child_pointers[idx];
     BTreeNode<T> *sibling = v_child_pointers[idx + 1];
@@ -155,7 +155,7 @@ void BTreeNode<T>::borrow_from_next(int idx) {
     return;
 }
 
-template <class T>
+template<class T>
 void BTreeNode<T>::merge(int idx) {
     BTreeNode<T> *child = v_child_pointers[idx];
     BTreeNode<T> *sibling = v_child_pointers[idx + 1];
@@ -180,7 +180,7 @@ void BTreeNode<T>::merge(int idx) {
     return;
 }
 
-template <class T>
+template<class T>
 void BTreeNode<T>::traverse() {
     int i;
     for (i = 0; i < key_num; i++) {
@@ -195,7 +195,7 @@ void BTreeNode<T>::traverse() {
     }
 }
 
-template <class T>
+template<class T>
 void BTreeNode<T>::traverse(std::string &result) {
     int i;
     for (i = 0; i < key_num; i++) {
@@ -210,14 +210,14 @@ void BTreeNode<T>::traverse(std::string &result) {
     }
 }
 
-template <class T>
-BTreeNode<T> *BTreeNode<T>::search(int k) {
+template<class T>
+std::pair<int, T> *BTreeNode<T>::search(int k) {
     int i = 0;
     while (i < key_num && k > v_keys[i].first) {
         i++;
     }
     if (v_keys[i].first == k) {
-        return this;
+        return &v_keys[i];
     }
     // Not find here
     if (is_leaf) {
@@ -226,7 +226,7 @@ BTreeNode<T> *BTreeNode<T>::search(int k) {
     return v_child_pointers[i]->search(k);
 }
 
-template <class T>
+template<class T>
 void BTreeNode<T>::insert_non_full(std::pair<int, T> k) {
     int i = key_num - 1;
     if (is_leaf) {
@@ -250,7 +250,7 @@ void BTreeNode<T>::insert_non_full(std::pair<int, T> k) {
     }
 }
 
-template <class T>
+template<class T>
 void BTreeNode<T>::split_child(int i, BTreeNode<T> *y) {
     BTreeNode<T> *z = new BTreeNode<T>(y->min_degree, y->is_leaf);
     z->key_num = min_degree - 1;
@@ -274,7 +274,7 @@ void BTreeNode<T>::split_child(int i, BTreeNode<T> *y) {
     key_num += 1;
 }
 
-template <class T>
+template<class T>
 void BTree<T>::insert(std::pair<int, T> k) {
     if (root == NULL) {
         root = new BTreeNode<T>(min_degree, true);
@@ -297,7 +297,8 @@ void BTree<T>::insert(std::pair<int, T> k) {
         }
     }
 }
-template <class T>
+
+template<class T>
 void BTree<T>::remove(int k) {
     if (!root) {
         std::cout << "Tree is empty" << std::endl;

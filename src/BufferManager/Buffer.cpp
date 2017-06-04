@@ -20,14 +20,18 @@ Buffer::Buffer() {
     out_file.write(reinterpret_cast<char *>(&this->DB_file_header), sizeof(DB_file_header));
 }
 
-//
-//BTree<int> Buffer::build_tree() {
-////    BTree tree(3);
-////    in_file.clear();
-////    in_file.seekg(0, std::ios::beg);
-////    SampleRecord record;
-//
-//}
+
+BTree<int> Buffer::build_tree() {
+    BTree<int> tree(3);
+    in_file.clear();
+    in_file.seekg(sizeof(DB_file_header), std::ios::beg);
+    SampleRecord record;
+    for (auto i = 0; i < DB_file_header.count; i++) {
+        in_file.read(reinterpret_cast<char *>(&record), sizeof(record));
+        tree.insert(std::pair<int, int>(record.views, i));
+    }
+    return tree;
+}
 
 void Buffer::write_sample_data(DBHeader &test_header, SampleRecord &test_data) {
     std::ofstream out_file(FILE_PATH, std::ios::binary);
@@ -35,6 +39,7 @@ void Buffer::write_sample_data(DBHeader &test_header, SampleRecord &test_data) {
 
     for (auto i = 0; i < 30; i++) {
         test_data.views = (uint32_t) i;
+        test_data.index = (uint32_t) i * 3;
         out_file.write(reinterpret_cast<char *>(&test_data), sizeof(test_data));
     }
 }
@@ -51,7 +56,7 @@ void Buffer::read_data(uint32_t index, SampleRecord &record) {
 
     in_file.seekg(index * sizeof(record) + sizeof(header));
     in_file.read(reinterpret_cast<char * >(&record), sizeof(record));
-    std::cout << record.title << record.views << std::endl;
+    std::cout << record.title << record.views << record.index << std::endl;
 }
 
 void Buffer::append_data(SampleRecord record, DBHeader header) {
