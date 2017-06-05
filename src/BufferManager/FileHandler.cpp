@@ -5,12 +5,14 @@
 #include <cstring>
 #include "FileHandler.h"
 
-FileHandler::FileHandler(char *file_path) : in_file(file_path, std::ios::binary),
-                                            out_file(file_path, std::ios::binary | std::ios::app | std::ios::out) {
+FileHandler::FileHandler(std::string file_path) : in_file(file_path, std::ios::binary),
+                                                  out_file(file_path,
+                                                           std::ios::binary | std::ios::app | std::ios::out) {
     in_file.read(reinterpret_cast<char *>(&DB_file_header), sizeof(DB_file_header));
     if (DB_file_header.ultimate_value != 42) {
         this->valid = false;
     }
+    this->file_path = file_path;
 }
 
 FileHandler::FileHandler() {
@@ -65,7 +67,7 @@ void FileHandler::load_tree(BTree<int> &b_tree) {
 }
 
 void FileHandler::write_sample_data(DBHeader &test_header, SampleRecord &test_data) {
-    std::ofstream out_file(FILE_PATH, std::ios::binary);
+    std::ofstream out_file(this->file_path, std::ios::binary);
     out_file.write(reinterpret_cast<char *>(&test_header), sizeof(test_header));
 
     for (auto i = 0; i < 30; i++) {
@@ -101,7 +103,7 @@ void FileHandler::append_data(SampleRecord record, DBHeader header) {
     out_file.write(reinterpret_cast<char *>(&record), sizeof(record));
     out_file.close();
 
-    std::ofstream rewrite_file(FILE_PATH, std::ios::binary | std::ios::in | std::ios::out);
+    std::ofstream rewrite_file(this->file_path, std::ios::binary | std::ios::in | std::ios::out);
     DBHeader new_header = header;
     new_header.count += 1;
     rewrite_file.clear();

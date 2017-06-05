@@ -17,13 +17,9 @@ int main(int argc, char *argv[]) {
 
     FileHandler aa((char *) FILE_PATH);
 
-//    aa.write_sample_data(test_header, test_data);
-//    aa.append_data(test_data, test_header);
-//    aa.read_data(30, test_data);
-//
+
     BTree<int> tree = aa.build_tree();
-//    tree.traverse();
-//    aa.write_tree(tree);
+
     BTree<int> test_tree(3);
     aa.load_tree(test_tree);
     std::pair<int, int> *result_node = test_tree.search(29);

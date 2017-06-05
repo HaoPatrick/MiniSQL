@@ -19,8 +19,8 @@ TEST_CASE("Buffer Test", "[Buffer]") {
     strncpy(test_data.title, "Great wbx", sizeof(test_data.title) - 1);
     strncpy(test_data.comment, "Hey wbx", sizeof(test_data.comment) - 1);
 
-
-    FileHandler aa((char *) FILE_PATH);
+    std::string file_path("db_test.hlh");
+    FileHandler aa(file_path);
 
     aa.write_sample_data(test_header, test_data);
     std::string result_string("");

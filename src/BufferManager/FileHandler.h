@@ -36,7 +36,7 @@ struct SampleRecord {
 
 class FileHandler {
 public:
-    FileHandler(char *);
+    FileHandler(std::string);
 
     FileHandler();
 
@@ -68,6 +68,7 @@ public:
 private:
     DBHeader DB_file_header;
     bool valid;
+    std::string file_path;
     std::ifstream in_file;
     std::ofstream out_file;
 };
