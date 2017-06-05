@@ -46,7 +46,7 @@ void Buffer::write_tree(BTree<int> b_tree) {
     out_file.close();
 }
 
-void Buffer::load_tree(BTree<int> b_tree) {
+void Buffer::load_tree(BTree<int> &b_tree) {
     std::vector<std::pair<int, int>> result;
     DBHeader index_header;
 
@@ -55,7 +55,13 @@ void Buffer::load_tree(BTree<int> b_tree) {
     if (index_header.type != index || index_header.count <= 0) {
         return;
     }
-    in_file.read(reinterpret_cast<char *>(&result), sizeof(sizeof(std::pair<int, int>) * index_header.count));
+    result.resize(index_header.count);
+    in_file.read(reinterpret_cast<char *>(result.data()),
+                 sizeof(result[0]) * index_header.count);
+    in_file.close();
+    for (auto item:result) {
+        b_tree.insert(item);
+    }
 }
 
 void Buffer::write_sample_data(DBHeader &test_header, SampleRecord &test_data) {

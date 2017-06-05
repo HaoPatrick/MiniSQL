@@ -59,7 +59,7 @@ public:
 
     void write_tree(BTree<int>);
 
-    void load_tree(BTree<int>);
+    void load_tree(BTree<int> &);
 
     void write_sample_data(DBHeader &, SampleRecord &);
 
