@@ -24,9 +24,9 @@ public:
     ~BTreeNode<T>() {
     }
 
-    void traverse();
-
     void traverse(std::string &);
+
+    void traverse(std::vector<std::pair<int, T> > &);
 
 
     std::pair<int, T> *search(int k);
@@ -68,11 +68,11 @@ public:
         min_degree = _t;
     }
 
-    void traverse() {
-        if (root != NULL) root->traverse();
+    void traverse(std::string &result) {
+        if (root != NULL) root->traverse(result);
     }
 
-    void traverse(std::string &result) {
+    void traverse(std::vector<std::pair<int, T> > &result) {
         if (root != NULL) root->traverse(result);
     }
 

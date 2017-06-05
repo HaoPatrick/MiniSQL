@@ -33,6 +33,31 @@ BTree<int> Buffer::build_tree() {
     return tree;
 }
 
+void Buffer::write_tree(BTree<int> b_tree) {
+    std::vector<std::pair<int, int>> result;
+    b_tree.traverse(result);
+    DBHeader index_header;
+    index_header.count = (uint32_t) result.size();
+    index_header.ultimate_value = 42;
+    index_header.type = index;
+    std::ofstream out_file(INDEX_PATH, std::ios::binary);
+    out_file.write(reinterpret_cast<char *>(&index_header), sizeof(index_header));
+    out_file.write(reinterpret_cast<char *>(result.data()), sizeof(result[0]) * result.size());
+    out_file.close();
+}
+
+void Buffer::load_tree(BTree<int> b_tree) {
+    std::vector<std::pair<int, int>> result;
+    DBHeader index_header;
+
+    std::ifstream in_file(INDEX_PATH, std::ios::binary);
+    in_file.read(reinterpret_cast<char *>(&index_header), sizeof(index_header));
+    if (index_header.type != index || index_header.count <= 0) {
+        return;
+    }
+    in_file.read(reinterpret_cast<char *>(&result), sizeof(sizeof(std::pair<int, int>) * index_header.count));
+}
+
 void Buffer::write_sample_data(DBHeader &test_header, SampleRecord &test_data) {
     std::ofstream out_file(FILE_PATH, std::ios::binary);
     out_file.write(reinterpret_cast<char *>(&test_header), sizeof(test_header));

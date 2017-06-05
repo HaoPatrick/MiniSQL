@@ -10,6 +10,7 @@
 
 #define BLOCK_SIZE 4096
 #define FILE_PATH "db.hlh"
+#define INDEX_PATH "db.idx"
 
 enum FileType {
     table,
@@ -55,6 +56,10 @@ public:
     void read_data(uint32_t, SampleRecord &record);
 
     BTree<int> build_tree();
+
+    void write_tree(BTree<int>);
+
+    void load_tree(BTree<int>);
 
     void write_sample_data(DBHeader &, SampleRecord &);
 

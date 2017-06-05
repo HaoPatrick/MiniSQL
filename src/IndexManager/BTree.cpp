@@ -180,20 +180,6 @@ void BTreeNode<T>::merge(int idx) {
     return;
 }
 
-template<class T>
-void BTreeNode<T>::traverse() {
-    int i;
-    for (i = 0; i < key_num; i++) {
-        if (!is_leaf) {
-            v_child_pointers[i]->traverse();
-        }
-        std::cout << " " << v_keys[i].first;
-    }
-    // i=n
-    if (!is_leaf) {
-        v_child_pointers[i]->traverse();
-    }
-}
 
 template<class T>
 void BTreeNode<T>::traverse(std::string &result) {
@@ -205,6 +191,20 @@ void BTreeNode<T>::traverse(std::string &result) {
         result += (" " + std::to_string(v_keys[i].first));
     }
     // i=n
+    if (!is_leaf) {
+        v_child_pointers[i]->traverse(result);
+    }
+}
+
+template<class T>
+void BTreeNode<T>::traverse(std::vector<std::pair<int, T> > &result) {
+    int i;
+    for (i = 0; i < key_num; i++) {
+        if (!is_leaf) {
+            v_child_pointers[i]->traverse(result);
+        }
+        result.push_back(v_keys[i]);
+    }
     if (!is_leaf) {
         v_child_pointers[i]->traverse(result);
     }
@@ -273,6 +273,7 @@ void BTreeNode<T>::split_child(int i, BTreeNode<T> *y) {
     v_keys[i] = y->v_keys[min_degree - 1];
     key_num += 1;
 }
+
 
 template<class T>
 void BTree<T>::insert(std::pair<int, T> k) {
