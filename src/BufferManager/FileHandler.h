@@ -34,13 +34,13 @@ struct SampleRecord {
     char comment[32];
 };
 
-class Buffer {
+class FileHandler {
 public:
-    Buffer(char *);
+    FileHandler(char *);
 
-    Buffer();
+    FileHandler();
 
-    ~Buffer() {
+    ~FileHandler() {
         in_file.close();
         out_file.close();
     }

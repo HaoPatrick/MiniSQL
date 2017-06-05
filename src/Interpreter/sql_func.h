@@ -50,4 +50,4 @@ main(int ac, char **av)
     printf("SQL parse worked\n");
   else
     printf("SQL parse failed\n");
-} /* main */
+}

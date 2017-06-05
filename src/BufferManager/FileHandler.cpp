@@ -3,9 +3,9 @@
 //
 
 #include <cstring>
-#include "Buffer.h"
+#include "FileHandler.h"
 
-Buffer::Buffer(char *file_path) : in_file(file_path, std::ios::binary),
+FileHandler::FileHandler(char *file_path) : in_file(file_path, std::ios::binary),
                                   out_file(file_path, std::ios::binary | std::ios::app | std::ios::out) {
     in_file.read(reinterpret_cast<char *>(&DB_file_header), sizeof(DB_file_header));
     if (DB_file_header.ultimate_value != 42) {
@@ -13,7 +13,7 @@ Buffer::Buffer(char *file_path) : in_file(file_path, std::ios::binary),
     }
 }
 
-Buffer::Buffer() {
+FileHandler::FileHandler() {
     out_file.clear();
     DB_file_header.ultimate_value = 42;
     strncpy(DB_file_header.db_name, "DB HLH", sizeof(DB_file_header.db_name) - 1);
@@ -21,7 +21,7 @@ Buffer::Buffer() {
 }
 
 
-BTree<int> Buffer::build_tree() {
+BTree<int> FileHandler::build_tree() {
     BTree<int> tree(3);
     in_file.clear();
     in_file.seekg(sizeof(DB_file_header), std::ios::beg);
@@ -33,7 +33,7 @@ BTree<int> Buffer::build_tree() {
     return tree;
 }
 
-void Buffer::write_tree(BTree<int> b_tree) {
+void FileHandler::write_tree(BTree<int> b_tree) {
     std::vector<std::pair<int, int>> result;
     b_tree.traverse(result);
     DBHeader index_header;
@@ -46,7 +46,7 @@ void Buffer::write_tree(BTree<int> b_tree) {
     out_file.close();
 }
 
-void Buffer::load_tree(BTree<int> &b_tree) {
+void FileHandler::load_tree(BTree<int> &b_tree) {
     std::vector<std::pair<int, int>> result;
     DBHeader index_header;
 
@@ -64,7 +64,7 @@ void Buffer::load_tree(BTree<int> &b_tree) {
     }
 }
 
-void Buffer::write_sample_data(DBHeader &test_header, SampleRecord &test_data) {
+void FileHandler::write_sample_data(DBHeader &test_header, SampleRecord &test_data) {
     std::ofstream out_file(FILE_PATH, std::ios::binary);
     out_file.write(reinterpret_cast<char *>(&test_header), sizeof(test_header));
 
@@ -75,7 +75,7 @@ void Buffer::write_sample_data(DBHeader &test_header, SampleRecord &test_data) {
     }
 }
 
-void Buffer::read_data(uint32_t index, SampleRecord &record) {
+void FileHandler::read_data(uint32_t index, SampleRecord &record) {
     in_file.clear();
     in_file.seekg(0, std::ios::beg);
     DBHeader header;
@@ -90,7 +90,7 @@ void Buffer::read_data(uint32_t index, SampleRecord &record) {
     std::cout << record.title << record.views << record.index << std::endl;
 }
 
-void Buffer::append_data(SampleRecord record, DBHeader header) {
+void FileHandler::append_data(SampleRecord record, DBHeader header) {
     if (DB_file_header.item_size != sizeof(record) ||
         DB_file_header.type != header.type) {
         return;

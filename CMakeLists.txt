@@ -9,10 +9,10 @@ set(SOURCE_FILES src/main.cpp src/IndexManager/utils.h)
 add_library(lib_tree src/IndexManager/BTree.h src/IndexManager/BTree.cpp)
 add_library(lib_catch tests/test_catch.cpp)
 
-add_library(lib_buffer src/BufferManager/Buffer.cpp src/BufferManager/Buffer.h)
+add_library(lib_buffer src/BufferManager/FileHandler.cpp src/BufferManager/FileHandler.h)
 
 set(TEST_DIR tests)
-set(TEST_FILES ${TEST_DIR}/tests.cpp)
+set(TEST_FILES ${TEST_DIR}/tests_b_tree.cpp)
 
 add_executable(db_test ${TEST_FILES})
 add_executable(db ${SOURCE_FILES})

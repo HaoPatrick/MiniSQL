@@ -1,5 +1,5 @@
 #include <cstring>
-#include "BufferManager/Buffer.h"
+#include "BufferManager/FileHandler.h"
 
 int main(int argc, char *argv[]) {
     SampleRecord test_data;
@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     strncpy(test_data.comment, "Hey wbx", sizeof(test_data.comment) - 1);
 
 
-    Buffer aa((char *) FILE_PATH);
+    FileHandler aa((char *) FILE_PATH);
 
 //    aa.write_sample_data(test_header, test_data);
 //    aa.append_data(test_data, test_header);
