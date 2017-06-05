@@ -6,7 +6,7 @@
 #include "FileHandler.h"
 
 FileHandler::FileHandler(char *file_path) : in_file(file_path, std::ios::binary),
-                                  out_file(file_path, std::ios::binary | std::ios::app | std::ios::out) {
+                                            out_file(file_path, std::ios::binary | std::ios::app | std::ios::out) {
     in_file.read(reinterpret_cast<char *>(&DB_file_header), sizeof(DB_file_header));
     if (DB_file_header.ultimate_value != 42) {
         this->valid = false;
@@ -75,19 +75,21 @@ void FileHandler::write_sample_data(DBHeader &test_header, SampleRecord &test_da
     }
 }
 
-void FileHandler::read_data(uint32_t index, SampleRecord &record) {
+std::string FileHandler::read_data(uint32_t index, SampleRecord &record) {
+    std::string result;
+
     in_file.clear();
     in_file.seekg(0, std::ios::beg);
     DBHeader header;
     in_file.read(reinterpret_cast<char *>(&header), sizeof(header));
-    std::cout << header.db_name << header.type << header.ultimate_value << std::endl;
     if (sizeof(record) != header.item_size) {
-        return;
+        return "";
     }
 
     in_file.seekg(index * sizeof(record) + sizeof(header));
     in_file.read(reinterpret_cast<char * >(&record), sizeof(record));
-    std::cout << record.title << record.views << record.index << std::endl;
+    result += (std::string) record.title + " " + std::to_string(record.views) + " " + std::to_string(record.index);
+    return result;
 }
 
 void FileHandler::append_data(SampleRecord record, DBHeader header) {

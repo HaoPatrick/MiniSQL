@@ -53,7 +53,7 @@ public:
         return valid;
     }
 
-    void read_data(uint32_t, SampleRecord &record);
+    std::string read_data(uint32_t, SampleRecord &record);
 
     BTree<int> build_tree();
 
