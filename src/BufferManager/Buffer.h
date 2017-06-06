@@ -6,6 +6,6 @@
 class Buffer {
 public:
     unsigned int hit_count;
-    
+
 };
 
