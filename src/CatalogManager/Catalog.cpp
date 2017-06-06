@@ -14,6 +14,21 @@ Catalog::Catalog() {
     table_name = "";
 }
 
+Catalog::Catalog(unsigned int int_count, unsigned int float_count, unsigned int char_count) {
+    this->int_count = int_count;
+    this->float_count = float_count;
+    this->char_count = char_count;
+}
+
+void Catalog::set_attr_name(std::vector<std::string> names) {
+    this->attr_names.resize(int_count + float_count + char_count);
+    this->attr_names = names;
+}
+
+void Catalog::set_table_name(std::string table) {
+    this->table_name = table;
+}
+
 size_t Catalog::size() {
     return sizeof(int) * this->int_count +
            sizeof(char) * 255 * this->char_count +

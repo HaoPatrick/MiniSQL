@@ -9,15 +9,12 @@ FileHandler::FileHandler(std::string file_path) : in_file(file_path, std::ios::b
                                                   out_file(file_path,
                                                            std::ios::binary | std::ios::app | std::ios::out) {
     in_file.read(reinterpret_cast<char *>(&DB_file_header), sizeof(DB_file_header));
-    if (DB_file_header.ultimate_value != 42) {
-        this->valid = false;
-    }
+
     this->file_path = file_path;
 }
 
 FileHandler::FileHandler() {
     out_file.clear();
-    DB_file_header.ultimate_value = 42;
     strncpy(DB_file_header.db_name, "DB HLH", sizeof(DB_file_header.db_name) - 1);
     out_file.write(reinterpret_cast<char *>(&this->DB_file_header), sizeof(DB_file_header));
 }
@@ -40,7 +37,6 @@ void FileHandler::write_tree(BTree<int> b_tree) {
     b_tree.traverse(result);
     DBHeader index_header;
     index_header.count = (uint32_t) result.size();
-    index_header.ultimate_value = 42;
     index_header.type = index;
     std::ofstream out_file(INDEX_PATH, std::ios::binary);
     out_file.write(reinterpret_cast<char *>(&index_header), sizeof(index_header));
@@ -84,9 +80,6 @@ std::string FileHandler::read_data(uint32_t index, SampleRecord &record) {
     in_file.seekg(0, std::ios::beg);
     DBHeader header;
     in_file.read(reinterpret_cast<char *>(&header), sizeof(header));
-    if (sizeof(record) != header.item_size) {
-        return "";
-    }
 
     in_file.seekg(index * sizeof(record) + sizeof(header));
     in_file.read(reinterpret_cast<char * >(&record), sizeof(record));
@@ -95,8 +88,7 @@ std::string FileHandler::read_data(uint32_t index, SampleRecord &record) {
 }
 
 void FileHandler::append_data(SampleRecord record, DBHeader header) {
-    if (DB_file_header.item_size != sizeof(record) ||
-        DB_file_header.type != header.type) {
+    if (DB_file_header.type != header.type) {
         return;
     }
     out_file.clear();
@@ -105,6 +97,24 @@ void FileHandler::append_data(SampleRecord record, DBHeader header) {
 
     std::ofstream rewrite_file(this->file_path, std::ios::binary | std::ios::in | std::ios::out);
     DBHeader new_header = header;
+    new_header.count += 1;
+    rewrite_file.clear();
+    rewrite_file.seekp(0, std::ios::beg);
+    rewrite_file.write(reinterpret_cast<char *>(&new_header), sizeof(new_header));
+    rewrite_file.close();
+}
+
+void FileHandler::append_data(Record record) {
+    out_file.clear();
+    out_file.write(reinterpret_cast<char *>(record.int_v.data()),
+                   sizeof(int) * record.int_v.size());
+    out_file.write(reinterpret_cast<char *>(record.float_v.data()),
+                   sizeof(float) * record.float_v.size());
+    out_file.write(reinterpret_cast<char *>(record.char_v.data()),
+                   sizeof(char[255]) * record.char_v.size());
+
+    std::ofstream rewrite_file(this->file_path, std::ios::binary | std::ios::in | std::ios::out);
+    DBHeader new_header = DB_file_header;
     new_header.count += 1;
     rewrite_file.clear();
     rewrite_file.seekp(0, std::ios::beg);

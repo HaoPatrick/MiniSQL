@@ -12,9 +12,7 @@ TEST_CASE("Buffer Test", "[Buffer]") {
     strncpy(test_header.db_name, "HLH DB", sizeof(test_header.db_name) - 1);
     test_header.type = table;
     test_header.count = 30;
-    test_header.item_size = sizeof(test_data);
-    test_header.ultimate_value = 42;
-    memset(test_header.ava_slot, 0, sizeof(test_header.ava_slot));
+//    memset(test_header.ava_slot, 0, sizeof(test_header.ava_slot));
 
     strncpy(test_data.title, "Great wbx", sizeof(test_data.title) - 1);
     strncpy(test_data.comment, "Hey wbx", sizeof(test_data.comment) - 1);

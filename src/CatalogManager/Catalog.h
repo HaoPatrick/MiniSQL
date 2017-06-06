@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-enum attr_type{
+enum attr_type {
     attr_int,
     attr_float,
     attr_char,
@@ -32,6 +32,12 @@ public:
     attr_type query_type(std::string);
 
     Catalog();
+
+    Catalog(unsigned int, unsigned int, unsigned int);
+
+    void set_attr_name(std::vector<std::string>);
+
+    void set_table_name(std::string);
 
 };
 

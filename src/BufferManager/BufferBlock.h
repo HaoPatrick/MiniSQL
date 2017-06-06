@@ -3,9 +3,13 @@
 //
 #pragma once
 
-class Buffer {
+#include "../CatalogManager/Catalog.h"
+
+
+class BufferBlock {
 public:
     unsigned int hit_count;
 
+    BufferBlock(Catalog);
 };
 

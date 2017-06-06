@@ -7,6 +7,8 @@
 #include <iostream>
 #include <fstream>
 #include "../IndexManager/BTree.h"
+#include "../RecordManager/Record.h"
+#include "../CatalogManager/Catalog.h"
 
 #define BLOCK_SIZE 4096
 #define FILE_PATH "db.hlh"
@@ -19,12 +21,12 @@ enum FileType {
 };
 
 struct DBHeader {
-    uint8_t ultimate_value;
+//    uint8_t ultimate_value;
     uint32_t count;
     char db_name[32];
     FileType type;
-    uint32_t item_size;
-    int ava_slot[32];
+//    uint32_t item_size;
+//    Catalog db_catalog;
 };
 
 struct SampleRecord {
@@ -64,6 +66,8 @@ public:
     void write_sample_data(DBHeader &, SampleRecord &);
 
     void append_data(SampleRecord, DBHeader);
+
+    void append_data(Record);
 
 private:
     DBHeader DB_file_header;
