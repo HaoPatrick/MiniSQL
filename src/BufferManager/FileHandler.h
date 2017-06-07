@@ -9,6 +9,7 @@
 #include "../IndexManager/BTree.h"
 #include "../RecordManager/Record.h"
 #include "../CatalogManager/Catalog.h"
+#include <cstring>
 
 #define BLOCK_SIZE 4096
 #define FILE_PATH "db.hlh"

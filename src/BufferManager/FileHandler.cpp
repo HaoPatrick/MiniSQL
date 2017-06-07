@@ -118,7 +118,9 @@ std::string FileHandler::read_data(unsigned index, Record &record) {
     std::string result;
 
     in_file.clear();
-    in_file.seekg(index * sizeof(record) + sizeof(DB_file_header));
+    in_file.seekg(index * (sizeof(int) * record.int_count +
+                           sizeof(float) * record.float_count + sizeof(char) * 255 * record.char_count) +
+                  sizeof(DB_file_header));
     in_file.read(reinterpret_cast<char *>(record.int_v.data()),
                  sizeof(int) * record.int_count);
     in_file.read(reinterpret_cast<char *>(record.float_v.data()),
@@ -133,7 +135,7 @@ std::string FileHandler::read_data(unsigned index, Record &record) {
         result += std::to_string(i) + ' ';
     }
     for (auto i:record.char_v) {
-        result += std::string(std::begin(i), std::end(i)) + ' ';
+        result += (std::string) i.value + ' ';
     }
     return result;
 }
