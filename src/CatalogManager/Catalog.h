@@ -8,6 +8,8 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <cstring>
+#include "../RecordManager/Record.h"
 
 enum attr_type {
     attr_int,
@@ -16,12 +18,28 @@ enum attr_type {
     error
 };
 
+struct FixString {
+    FixString(std::string source_value) {
+        strncpy(this->value, source_value.c_str(), sizeof(char) * 255);
+    }
+
+    FixString() {
+        memset(value, 0, sizeof(char) * 255);
+    }
+
+    FixString operator=(const std::string &outer) {
+        return FixString(outer);
+    }
+
+    char value[255];
+};
+
 class Catalog {
 public:
     uint32_t int_count;
     uint32_t float_count;
     uint32_t char_count;
-    std::vector<std::string> attr_names;
+    std::vector<FixString> attr_names;
 
     std::string table_name;
 
@@ -35,7 +53,7 @@ public:
 
     Catalog(unsigned int, unsigned int, unsigned int);
 
-    void set_attr_name(std::vector<std::string>);
+    void set_attr_name(std::vector<FixString>);
 
     void set_table_name(std::string);
 

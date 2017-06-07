@@ -55,6 +55,11 @@ void FileHandler::write_tree(BTree<int> b_tree) {
     out_file.close();
 }
 
+void FileHandler::write_catalog(Catalog catalog, std::string catalog_path) {
+    std::ofstream write_file(catalog_path, std::ios::binary | std::ios::in | std::ios::out);
+    write_file.write(reinterpret_cast<char *>(&catalog), sizeof(catalog));
+}
+
 void FileHandler::load_tree(BTree<int> &b_tree) {
     std::vector<std::pair<int, int>> result;
     DBHeader index_header;

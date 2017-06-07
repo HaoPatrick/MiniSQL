@@ -8,17 +8,8 @@
 #include "../CatalogManager/Catalog.h"
 #include <cstring>
 
-struct FixString {
-    FixString(std::string source_value) {
-        strncpy(this->value, source_value.c_str(), sizeof(char) * 255);
-    }
-
-    FixString() {
-        memset(value, 0, sizeof(char) * 255);
-    }
-
-    char value[255];
-};
+struct FixString;
+class Catalog;
 
 class Record {
 public:

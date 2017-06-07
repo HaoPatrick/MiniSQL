@@ -12,7 +12,6 @@
 #include <cstring>
 
 #define BLOCK_SIZE 4096
-#define FILE_PATH "db.hlh"
 #define INDEX_PATH "db.idx"
 
 enum FileType {
@@ -20,6 +19,8 @@ enum FileType {
     index,
     catalog
 };
+
+
 
 struct DBHeader {
 //    uint8_t ultimate_value;
@@ -69,6 +70,8 @@ public:
     void write_tree(BTree<int>);
 
     void load_tree(BTree<int> &);
+
+    void write_catalog(Catalog, std::string);
 
     void write_sample_data(DBHeader &, SampleRecord &);
 
