@@ -25,8 +25,10 @@ struct DBHeader {
     uint32_t count;
     char db_name[32];
     FileType type;
-//    uint32_t item_size;
-//    Catalog db_catalog;
+    unsigned int int_count;
+    unsigned int float_count;
+    unsigned int char_count;
+    unsigned int check_value;
 };
 
 struct SampleRecord {
@@ -39,6 +41,8 @@ struct SampleRecord {
 class FileHandler {
 public:
     FileHandler(std::string);
+
+    FileHandler(std::string, DBHeader);
 
     FileHandler();
 
@@ -57,6 +61,8 @@ public:
 
     std::string read_data(uint32_t, SampleRecord &record);
 
+    std::string read_data(unsigned, Record &record);
+
     BTree<int> build_tree();
 
     void write_tree(BTree<int>);
@@ -64,6 +70,8 @@ public:
     void load_tree(BTree<int> &);
 
     void write_sample_data(DBHeader &, SampleRecord &);
+
+    void write_sample_data(Record);
 
     void append_data(SampleRecord, DBHeader);
 

@@ -18,6 +18,6 @@ add_library(lib_record src/RecordManager/Record.cpp src/RecordManager/Record.h)
 add_executable(db_test ${TEST_FILES})
 add_executable(db ${SOURCE_FILES})
 
-target_link_libraries(db lib_buffer)
+target_link_libraries(db lib_buffer lib_tree lib_file_handler lib_catalog lib_record)
 target_link_libraries(db_test lib_tree lib_catch lib_file_handler lib_catalog)
-target_link_libraries(db lib_tree)
+#target_link_libraries(db lib_tree)

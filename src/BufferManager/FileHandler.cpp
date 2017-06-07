@@ -13,6 +13,17 @@ FileHandler::FileHandler(std::string file_path) : in_file(file_path, std::ios::b
     this->file_path = file_path;
 }
 
+FileHandler::FileHandler(std::string file_path, DBHeader db_header) :
+        in_file(file_path, std::ios::binary),
+        out_file(file_path,
+                 std::ios::binary | std::ios::app |
+                 std::ios::out) {
+    this->DB_file_header = db_header;
+    out_file.write(reinterpret_cast<char *>(&db_header), sizeof(db_header));
+    this->file_path = file_path;
+}
+
+
 FileHandler::FileHandler() {
     out_file.clear();
     strncpy(DB_file_header.db_name, "DB HLH", sizeof(DB_file_header.db_name) - 1);
@@ -73,6 +84,22 @@ void FileHandler::write_sample_data(DBHeader &test_header, SampleRecord &test_da
     }
 }
 
+void FileHandler::write_sample_data(Record record) {
+    std::ofstream out_file(this->file_path, std::ios::binary);
+    out_file.write(reinterpret_cast<char *>(&DB_file_header), sizeof(DB_file_header));
+
+    for (auto i = 0; i < 30; i++) {
+        record.int_v[0] = i;
+        out_file.write(reinterpret_cast<char *>(record.int_v.data()),
+                       sizeof(int) * record.int_count);
+        out_file.write(reinterpret_cast<char *>(record.float_v.data()),
+                       sizeof(float) * record.float_count);
+        out_file.write(reinterpret_cast<char *>(record.char_v.data()),
+                       sizeof(char[255]) * record.char_count);
+    }
+}
+
+
 std::string FileHandler::read_data(uint32_t index, SampleRecord &record) {
     std::string result;
 
@@ -84,6 +111,30 @@ std::string FileHandler::read_data(uint32_t index, SampleRecord &record) {
     in_file.seekg(index * sizeof(record) + sizeof(header));
     in_file.read(reinterpret_cast<char * >(&record), sizeof(record));
     result += (std::string) record.title + " " + std::to_string(record.views) + " " + std::to_string(record.index);
+    return result;
+}
+
+std::string FileHandler::read_data(unsigned index, Record &record) {
+    std::string result;
+
+    in_file.clear();
+    in_file.seekg(index * sizeof(record) + sizeof(DB_file_header));
+    in_file.read(reinterpret_cast<char *>(record.int_v.data()),
+                 sizeof(int) * record.int_count);
+    in_file.read(reinterpret_cast<char *>(record.float_v.data()),
+                 sizeof(float) * record.float_count);
+    in_file.read(reinterpret_cast<char *>(record.char_v.data()),
+                 sizeof(char[255]) * record.char_count);
+
+    for (auto i:record.int_v) {
+        result += std::to_string(i) + ' ';
+    }
+    for (auto i:record.float_v) {
+        result += std::to_string(i) + ' ';
+    }
+    for (auto i:record.char_v) {
+        result += std::string(std::begin(i), std::end(i)) + ' ';
+    }
     return result;
 }
 

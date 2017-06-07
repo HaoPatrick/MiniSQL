@@ -18,6 +18,7 @@ Catalog::Catalog(unsigned int int_count, unsigned int float_count, unsigned int 
     this->int_count = int_count;
     this->float_count = float_count;
     this->char_count = char_count;
+    this->attr_names.resize(int_count + float_count + char_count);
 }
 
 void Catalog::set_attr_name(std::vector<std::string> names) {

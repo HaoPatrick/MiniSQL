@@ -5,7 +5,7 @@
 #pragma once
 
 #include <iostream>
-#include <vector>
+ #include <vector>
 
 template<typename T>
 class BTree;

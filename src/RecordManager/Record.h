@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <array>
 #include "../CatalogManager/Catalog.h"
 
 class Record {
@@ -12,7 +13,10 @@ public:
 
     std::vector<int> int_v;
     std::vector<float> float_v;
-    std::vector<char[255]> char_v;
-    std::string table_name;
+    std::vector<std::array<char, 255>> char_v;
+
+    unsigned int int_count;
+    unsigned int float_count;
+    unsigned int char_count;
 };
 

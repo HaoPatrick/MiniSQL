@@ -2,30 +2,36 @@
 #include "BufferManager/FileHandler.h"
 
 int main(int argc, char *argv[]) {
-    SampleRecord test_data;
     DBHeader test_header;
     strncpy(test_header.db_name, "HLH DB", sizeof(test_header.db_name) - 1);
     test_header.type = table;
     test_header.count = 30;
-    test_header.item_size = sizeof(test_data);
-    test_header.ultimate_value = 42;
-    memset(test_header.ava_slot, 0, sizeof(test_header.ava_slot));
+    test_header.int_count = 2;
+    test_header.float_count = 1;
+    test_header.char_count = 1;
+    test_header.check_value = 42;
+    FileHandler aa("new.hlh", test_header);
 
-    strncpy(test_data.title, "Great wbx", sizeof(test_data.title) - 1);
-    strncpy(test_data.comment, "Hey wbx", sizeof(test_data.comment) - 1);
+//    Catalog catalog(2, 1, 1);
+//    catalog.table_name = "test table";
+//    catalog.attr_names[0] = "int 0";
+//    catalog.attr_names[1] = "int 1";
+//    catalog.attr_names[2] = "float 0";
+//    catalog.attr_names[3] = "char 0";
 
+//    Record record(catalog);
+//    record.int_v[0] = 42;
+//    record.int_v[1] = 24;
+//    record.float_v[0] = 3.1415;
+//    strncpy(record.char_v[0], "hello hlh!", sizeof(record.char_v[0])-1);
+//    record.char_v[0] = "hello hlh!";
 
-    FileHandler aa((char *) FILE_PATH);
-
-
-    BTree<int> tree = aa.build_tree();
-
-    BTree<int> test_tree(3);
-    aa.load_tree(test_tree);
-    std::pair<int, int> *result_node = test_tree.search(29);
-    if (result_node) {
-        std::cout << result_node->first << result_node->second << std::endl;
-    }
+//
+//    aa.write_sample_data(record);
+//
+//    Record result_record(catalog);
+//    std::string result_string = aa.read_data(3, record);
+//    std::cout << result_string << std::endl;
 
     return 0;
 }
