@@ -21,7 +21,6 @@ enum FileType {
 };
 
 
-
 struct DBHeader {
 //    uint8_t ultimate_value;
     uint32_t count;
@@ -71,7 +70,9 @@ public:
 
     void load_tree(BTree<int> &);
 
-    void write_catalog(Catalog, std::string);
+    void write_catalog(Catalog);
+
+    Catalog load_catalog();
 
     void write_sample_data(DBHeader &, SampleRecord &);
 

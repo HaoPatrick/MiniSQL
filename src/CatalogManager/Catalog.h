@@ -20,15 +20,27 @@ enum attr_type {
 
 struct FixString {
     FixString(std::string source_value) {
-        strncpy(this->value, source_value.c_str(), sizeof(char) * 255);
+        strncpy(this->value, source_value.c_str(), 255);
     }
 
     FixString() {
-        memset(value, 0, sizeof(char) * 255);
+        memset(value, 0, 255);
     }
 
-    FixString operator=(const std::string &outer) {
-        return FixString(outer);
+    std::string to_string() {
+        return std::string(this->value);
+    };
+
+    void operator=(const std::string &outer) {
+        strncpy(this->value, outer.c_str(), 255);
+    }
+
+    bool operator==(const FixString &outer) {
+        return strncmp(this->value, outer.value, 255) == 0;
+    }
+
+    bool operator==(const char *outer) {
+        return strncmp(this->value, outer, 255) == 0;
     }
 
     char value[255];
@@ -36,16 +48,16 @@ struct FixString {
 
 class Catalog {
 public:
-    uint32_t int_count;
-    uint32_t float_count;
-    uint32_t char_count;
+    unsigned int int_count;
+    unsigned int float_count;
+    unsigned int char_count;
     std::vector<FixString> attr_names;
 
-    std::string table_name;
+    FixString table_name;
 
     size_t size();
 
-    ptrdiff_t get_pos(std::string);
+    ptrdiff_t get_pos(FixString);
 
     attr_type query_type(std::string);
 
@@ -57,6 +69,8 @@ public:
 
     void set_table_name(std::string);
 
+//    std::istream &operator>>(std::istream &is, Catalog &cat);
 };
+
 
 

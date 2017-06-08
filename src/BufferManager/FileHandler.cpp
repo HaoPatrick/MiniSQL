@@ -55,9 +55,41 @@ void FileHandler::write_tree(BTree<int> b_tree) {
     out_file.close();
 }
 
-void FileHandler::write_catalog(Catalog catalog, std::string catalog_path) {
-    std::ofstream write_file(catalog_path, std::ios::binary | std::ios::in | std::ios::out);
-    write_file.write(reinterpret_cast<char *>(&catalog), sizeof(catalog));
+void FileHandler::write_catalog(Catalog catalog) {
+    std::ofstream new_file(file_path, std::ios::binary);
+    new_file.write(reinterpret_cast<char *>(&DB_file_header), sizeof(DB_file_header));
+    new_file.write(reinterpret_cast<char *>(
+                           &catalog.int_count), sizeof(unsigned int));
+    new_file.write(reinterpret_cast<char *>(
+                           &catalog.float_count), sizeof(unsigned int));
+    new_file.write(reinterpret_cast<char *>(
+                           &catalog.char_count), sizeof(unsigned int));
+    new_file.write(reinterpret_cast<char *>(
+                           &catalog.table_name), sizeof(catalog.table_name));
+    new_file.write(reinterpret_cast<char *>(
+                           catalog.attr_names.data()), sizeof(FixString) * catalog.attr_names.size());
+
+//    new_file.write(reinterpret_cast<char *>(&catalog), sizeof(catalog));
+    new_file.close();
+}
+
+Catalog FileHandler::load_catalog() {
+    Catalog catalog;
+    this->in_file.clear();
+    in_file.seekg(sizeof(DB_file_header));
+    in_file.read(reinterpret_cast<char *>(
+                           &catalog.int_count), sizeof(unsigned int));
+    in_file.read(reinterpret_cast<char *>(
+                           &catalog.float_count), sizeof(unsigned int));
+    in_file.read(reinterpret_cast<char *>(
+                           &catalog.char_count), sizeof(unsigned int));
+    in_file.read(reinterpret_cast<char *>(
+                           &catalog.table_name), sizeof(catalog.table_name));
+    in_file.read(reinterpret_cast<char *>(
+                           catalog.attr_names.data()), sizeof(FixString) * catalog.attr_names.size());
+
+//    in_file.read(reinterpret_cast<char *>(&result), sizeof(result));
+    return catalog;
 }
 
 void FileHandler::load_tree(BTree<int> &b_tree) {
@@ -151,7 +183,6 @@ void FileHandler::append_data(SampleRecord record, DBHeader header) {
     }
     out_file.clear();
     out_file.write(reinterpret_cast<char *>(&record), sizeof(record));
-    out_file.close();
 
     std::ofstream rewrite_file(this->file_path, std::ios::binary | std::ios::in | std::ios::out);
     DBHeader new_header = header;

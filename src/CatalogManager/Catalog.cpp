@@ -19,7 +19,7 @@ Catalog::Catalog(unsigned int int_count, unsigned int float_count, unsigned int 
     this->int_count = int_count;
     this->float_count = float_count;
     this->char_count = char_count;
-    if(int_count+float_count+char_count>=32){
+    if (int_count + float_count + char_count >= 32) {
         //TODO: attribute overflow
     }
     this->attr_names.resize(32);
@@ -40,7 +40,7 @@ size_t Catalog::size() {
            sizeof(float_count) * this->char_count;
 }
 
-ptrdiff_t Catalog::get_pos(std::string attr_name) {
+ptrdiff_t Catalog::get_pos(FixString attr_name) {
     return std::find(this->attr_names.begin(), this->attr_names.end(), attr_name) -
            this->attr_names.begin();
 }

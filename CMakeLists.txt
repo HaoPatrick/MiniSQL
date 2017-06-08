@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(SOURCE_FILES src/main.cpp src/IndexManager/utils.h)
 set(TEST_DIR tests)
-set(TEST_FILES ${TEST_DIR}/tests_b_tree.cpp)
+set(TEST_FILES ${TEST_DIR}/tests_db.cpp)
 
 
 add_library(lib_tree src/IndexManager/BTree.h src/IndexManager/BTree.cpp)
