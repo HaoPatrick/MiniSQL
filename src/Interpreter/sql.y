@@ -325,7 +325,7 @@ table_reference:  table_factor
 ;
 
 table_factor:
-    NAME 
+    NAME {emit("TABLE %s",$1);free($1);}
 
 
    /* statements: delete statement */
