@@ -3,6 +3,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
+#include "../API/API_c_connector.h"
 
 void emit(char *s, ...)
 {
@@ -14,6 +15,12 @@ void emit(char *s, ...)
   printf("rpn: ");
   vfprintf(stdout, s, ap);
   printf("\n");
+}
+
+void create_index_test(char *index_name, char *table_name, char *column_name)
+{
+  printf("%s %s %s", index_name, table_name, column_name);
+  // create_index(index_name, table_name, column_name);
 }
 
 void yyerror(char *s, ...)

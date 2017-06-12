@@ -8,7 +8,8 @@ PROGRAMS = sql.exe
 all:	${PROGRAMS} clean
 
 sql.exe:	sql.tab.o sql.o
-	${CC} -o $@ sql.tab.o sql.o
+	${CC} -L../API -lapi_c_conn -lapi sql.tab.o sql.o -o $@ 
+ 
 
 sql.tab.c sql.tab.h:	sql.y
 	${YACC} -vd sql.y

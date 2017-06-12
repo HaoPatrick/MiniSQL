@@ -4,6 +4,7 @@
 
 void yyerror(char *s, ...);
 void emit(char *s, ...);
+void create_index(char *s,char *t,char *w);
 %}
 
 
@@ -425,7 +426,7 @@ stmt: create_index_stmt { emit("STMT"); }
    ;
 
 create_index_stmt: CREATE KEY NAME ON NAME
-   '(' NAME ')' { emit("CREATEIDX %s %s %s", $3,$5, $7); free($7); free($3);free($5); }
+   '(' NAME ')' { create_index_test($3,$5,$7); emit("CREATEIDX %s %s %s", $3,$5, $7); free($7); free($3);free($5); }
    ;
 
    /** drop index **/

@@ -4,7 +4,12 @@
 
 #pragma once
 
-class API {
+#include <iostream>
 
+class API {
+public:
+    void create_index(char *a, char *b, char *c) {
+        std::cout << a << b << c << std::endl;
+    }
 };
 
