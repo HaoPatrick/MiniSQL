@@ -62,6 +62,8 @@ public:
 
     std::string read_data(uint32_t, SampleRecord &record);
 
+    std::string search_data();
+
     std::string read_data(unsigned, Record &record);
 
     BTree<int> build_tree();

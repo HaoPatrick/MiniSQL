@@ -25,5 +25,4 @@ Catalog API::load_table(std::string table_name) {
 void API::create_index(std::string index_name,
                        std::string table_name,
                        std::string column_name) {
-
 }

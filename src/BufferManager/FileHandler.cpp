@@ -210,3 +210,13 @@ void FileHandler::append_data(Record record) {
     rewrite_file.write(reinterpret_cast<char *>(&new_header), sizeof(new_header));
     rewrite_file.close();
 }
+
+//std::string FileHandler::search_data(Record &record) {
+//    std::string result;
+//
+//    in_file.clear();
+//    in_file.seekg(index * (sizeof(int) * record.int_count +
+//                           sizeof(float) * record.float_count + sizeof(char) * 255 * record.char_count) +
+//                  sizeof(DB_file_header));
+//    return std::string();
+//}
