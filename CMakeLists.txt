@@ -3,9 +3,6 @@ project(db)
 
 set(CMAKE_CXX_STANDARD 11)
 
-find_package(FLEX)
-find_package(BISON)
-
 set(SOURCE_FILES src/main.cpp src/IndexManager/utils.h)
 set(TEST_DIR tests)
 set(TEST_FILES ${TEST_DIR}/tests_db.cpp)
@@ -24,5 +21,5 @@ add_executable(db_test ${TEST_FILES})
 add_executable(db ${SOURCE_FILES})
 
 target_link_libraries(db lib_buffer lib_tree lib_file_handler lib_catalog lib_record)
-target_link_libraries(db_test lib_tree lib_catch lib_file_handler lib_record lib_catalog)
+target_link_libraries(db_test lib_tree lib_catch lib_file_handler lib_record lib_catalog lib_api)
 #target_link_libraries(db lib_tree)

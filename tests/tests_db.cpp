@@ -3,8 +3,31 @@
 //
 #include "../src/Indexmanager/BTree.h"
 #include "../src/BufferManager/FileHandler.h"
+#include "../src/API/API.h"
 #include <cstring>
 #include "catch.hpp"
+
+TEST_CASE("Test API", "[API]") {
+    API instance;
+    std::string table_name = "db_api";
+    std::vector<unsigned int> counts;
+    counts.push_back(2);
+    counts.push_back(1);
+    counts.push_back(1);
+    std::vector<std::string> attr_name;
+    attr_name.push_back("int0");
+    attr_name.push_back("int1");
+    attr_name.push_back("float0");
+    attr_name.push_back("char0");
+
+    instance.create_table(table_name, counts, attr_name);
+    Catalog saved_catalog = instance.load_table("db_api");
+
+    REQUIRE(saved_catalog.attr_names[0] == "int0");
+    REQUIRE(saved_catalog.attr_names[3] == "char0");
+    REQUIRE(saved_catalog.table_name.to_string() == "db_api");
+    REQUIRE(saved_catalog.char_count == 1);
+}
 
 TEST_CASE("Write and Load catalog", "[Catalog]") {
     DBHeader test_header;
