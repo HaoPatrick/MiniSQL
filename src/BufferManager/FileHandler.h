@@ -45,6 +45,8 @@ public:
 
     FileHandler(std::string, DBHeader);
 
+    FileHandler(std::string, FileType);
+
     FileHandler();
 
     ~FileHandler() {
@@ -67,6 +69,8 @@ public:
     std::string read_data(unsigned, Record &record);
 
     BTree<int> build_tree();
+
+    BTree<int> build_tree(unsigned int, Record);
 
     void write_tree(BTree<int>);
 

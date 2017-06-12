@@ -1,7 +1,14 @@
 cmake_minimum_required(VERSION 3.7)
 project(db)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
+set(BOOST_ROOT "C:\\Program Files\\boost_1_63_0")
+set(BOOSTROOT "C:\\Program Files\\boost_1_63_0")
+find_package(Boost)
+IF (Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIR})
+endif()
+
 
 set(SOURCE_FILES src/main.cpp src/IndexManager/utils.h)
 set(TEST_DIR tests)

@@ -43,6 +43,10 @@ struct FixString {
         return strncmp(this->value, outer, 255) == 0;
     }
 
+    bool operator==(const std::string &outer) {
+        return outer == this->value;
+    }
+
     char value[255];
 };
 
@@ -58,6 +62,7 @@ public:
     size_t size();
 
     ptrdiff_t get_pos(FixString);
+    ptrdiff_t get_pos(std::string);
 
     attr_type query_type(std::string);
 

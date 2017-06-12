@@ -45,6 +45,11 @@ ptrdiff_t Catalog::get_pos(FixString attr_name) {
            this->attr_names.begin();
 }
 
+ptrdiff_t Catalog::get_pos(std::string attr_name) {
+    return std::find(this->attr_names.begin(), this->attr_names.end(),
+                     attr_name) - this->attr_names.begin();
+}
+
 attr_type Catalog::query_type(std::string attr_name) {
     ptrdiff_t pos = this->get_pos(attr_name);
     attr_type result_type;
@@ -59,3 +64,4 @@ attr_type Catalog::query_type(std::string attr_name) {
     }
     return result_type;
 }
+

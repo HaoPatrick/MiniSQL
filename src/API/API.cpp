@@ -17,7 +17,11 @@ void API::create_table(std::string table_name,
 }
 
 Catalog API::load_table(std::string table_name) {
+    if (!boost::filesystem::exists("catalog_" + table_name + ".hlh")) {
+        return Catalog();
+    }
     FileHandler file("catalog_" + table_name + ".hlh");
+    // TODO: check if exist
     Catalog result = file.load_catalog();
     return result;
 }
@@ -25,4 +29,20 @@ Catalog API::load_table(std::string table_name) {
 void API::create_index(std::string index_name,
                        std::string table_name,
                        std::string column_name) {
+    Catalog catalog = load_table(table_name);
+    attr_type column_type = catalog.query_type(column_name);
+    if (column_type != attr_int) {
+        return;
+    }
+    Record sample_record(catalog);
+    unsigned int int_pos = (unsigned int) catalog.get_pos(column_name);
+    FileHandler table_file("table_" + table_name + ".hlh", FileType(table));
+    BTree<int> tree = table_file.build_tree(int_pos, sample_record);
+
+    FileHandler index_file("index_" + index_name + ".hlh",
+                           FileType(index));
+    index_file.write_tree(tree);
 }
+
+
+

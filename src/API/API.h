@@ -8,6 +8,9 @@
 #include <vector>
 #include "../CatalogManager/Catalog.h"
 #include "../BufferManager/FileHandler.h"
+#include <boost/filesystem.hpp>
+
+namespace fs=boost::filesystem;
 
 
 class API {
@@ -26,6 +29,12 @@ public:
     void create_index(std::string index_name,
                       std::string table_name,
                       std::string column_name);
+
+    Record search_item(std::string table_name, std::string column_name, int int_value);
+
+    Record search_item(std::string table_name, std::string column_name, float float_value);
+
+    Record search_item(std::string table_name, std::string column_name, std::string char_value);
 
 };
 

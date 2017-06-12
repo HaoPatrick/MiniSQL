@@ -13,6 +13,19 @@ FileHandler::FileHandler(std::string file_path) : in_file(file_path, std::ios::b
     this->file_path = file_path;
 }
 
+FileHandler::FileHandler(std::string file_path, FileType file_type) :
+        in_file(file_path, std::ios::binary),
+        out_file(file_path,
+                 std::ios::binary | std::ios::app |
+                 std::ios::out) {
+    DBHeader file_header;
+    file_header.count = 0;
+    file_header.type = file_type;
+    this->DB_file_header = file_header;
+    out_file.write(reinterpret_cast<char *>(&this->DB_file_header), sizeof(this->DB_file_header));
+    this->file_path = file_path;
+}
+
 FileHandler::FileHandler(std::string file_path, DBHeader db_header) :
         in_file(file_path, std::ios::binary),
         out_file(file_path,
@@ -43,13 +56,25 @@ BTree<int> FileHandler::build_tree() {
     return tree;
 }
 
+BTree<int> FileHandler::build_tree(unsigned int position,
+                                   Record sample_record) {
+    BTree<int> tree(3);
+    in_file.clear();
+    in_file.seekg(sizeof(DB_file_header), std::ios::beg);
+    for (auto i = 0; i < DB_file_header.count; i++) {
+        in_file.read(reinterpret_cast<char *>(&sample_record), sizeof(sample_record));
+        tree.insert(std::pair<int, int>(sample_record.int_v[position], i));
+    }
+    return tree;
+}
+
 void FileHandler::write_tree(BTree<int> b_tree) {
     std::vector<std::pair<int, int>> result;
     b_tree.traverse(result);
     DBHeader index_header;
     index_header.count = (uint32_t) result.size();
     index_header.type = index;
-    std::ofstream out_file(INDEX_PATH, std::ios::binary);
+    std::ofstream out_file(this->file_path, std::ios::binary);
     out_file.write(reinterpret_cast<char *>(&index_header), sizeof(index_header));
     out_file.write(reinterpret_cast<char *>(result.data()), sizeof(result[0]) * result.size());
     out_file.close();
@@ -78,15 +103,15 @@ Catalog FileHandler::load_catalog() {
     this->in_file.clear();
     in_file.seekg(sizeof(DB_file_header));
     in_file.read(reinterpret_cast<char *>(
-                           &catalog.int_count), sizeof(unsigned int));
+                         &catalog.int_count), sizeof(unsigned int));
     in_file.read(reinterpret_cast<char *>(
-                           &catalog.float_count), sizeof(unsigned int));
+                         &catalog.float_count), sizeof(unsigned int));
     in_file.read(reinterpret_cast<char *>(
-                           &catalog.char_count), sizeof(unsigned int));
+                         &catalog.char_count), sizeof(unsigned int));
     in_file.read(reinterpret_cast<char *>(
-                           &catalog.table_name), sizeof(catalog.table_name));
+                         &catalog.table_name), sizeof(catalog.table_name));
     in_file.read(reinterpret_cast<char *>(
-                           catalog.attr_names.data()), sizeof(FixString) * catalog.attr_names.size());
+                         catalog.attr_names.data()), sizeof(FixString) * catalog.attr_names.size());
 
 //    in_file.read(reinterpret_cast<char *>(&result), sizeof(result));
     return catalog;
@@ -94,9 +119,10 @@ Catalog FileHandler::load_catalog() {
 
 void FileHandler::load_tree(BTree<int> &b_tree) {
     std::vector<std::pair<int, int>> result;
-    DBHeader index_header;
 
-    std::ifstream in_file(INDEX_PATH, std::ios::binary);
+    DBHeader &index_header = this->DB_file_header;
+
+    std::ifstream in_file(this->file_path, std::ios::binary);
     in_file.read(reinterpret_cast<char *>(&index_header), sizeof(index_header));
     if (index_header.type != index || index_header.count <= 0) {
         return;
