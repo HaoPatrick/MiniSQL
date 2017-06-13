@@ -68,6 +68,8 @@ public:
 
     std::string read_data(unsigned, Record &record);
 
+    bool linear_search(Record &record, int pos, int value);
+
     BTree<int> build_tree();
 
     BTree<int> build_tree(unsigned int, Record);
@@ -82,7 +84,7 @@ public:
 
     void write_sample_data(DBHeader &, SampleRecord &);
 
-    void write_sample_data(Record);
+    void write_sample_data(Record,int);
 
     void append_data(SampleRecord, DBHeader);
 

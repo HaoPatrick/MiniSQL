@@ -17,9 +17,9 @@ void API::create_table(std::string table_name,
 }
 
 Catalog API::load_table(std::string table_name) {
-    if (!boost::filesystem::exists("catalog_" + table_name + ".hlh")) {
-        return Catalog();
-    }
+//    if (!boost::filesystem::exists("catalog_" + table_name + ".hlh")) {
+//        return Catalog();
+//    }
     FileHandler file("catalog_" + table_name + ".hlh");
     // TODO: check if exist
     Catalog result = file.load_catalog();

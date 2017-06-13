@@ -147,11 +147,12 @@ void FileHandler::write_sample_data(DBHeader &test_header, SampleRecord &test_da
     }
 }
 
-void FileHandler::write_sample_data(Record record) {
+void FileHandler::write_sample_data(Record record, int count) {
     std::ofstream out_file(this->file_path, std::ios::binary);
+    this->DB_file_header.count = (uint32_t) count;
     out_file.write(reinterpret_cast<char *>(&DB_file_header), sizeof(DB_file_header));
 
-    for (auto i = 0; i < 30; i++) {
+    for (auto i = 0; i < count; i++) {
         record.int_v[0] = i;
         out_file.write(reinterpret_cast<char *>(record.int_v.data()),
                        sizeof(int) * record.int_count);
@@ -235,6 +236,24 @@ void FileHandler::append_data(Record record) {
     rewrite_file.seekp(0, std::ios::beg);
     rewrite_file.write(reinterpret_cast<char *>(&new_header), sizeof(new_header));
     rewrite_file.close();
+}
+
+bool FileHandler::linear_search(
+        Record &record, int pos, int value) {
+    in_file.clear();
+    in_file.seekg(sizeof(DB_file_header));
+    for (auto i = 0; i < DB_file_header.count; i++) {
+        in_file.read(reinterpret_cast<char *>(record.int_v.data()),
+                     sizeof(int) * record.int_count);
+        in_file.read(reinterpret_cast<char *>(record.float_v.data()),
+                     sizeof(float) * record.float_count);
+        in_file.read(reinterpret_cast<char *>(record.char_v.data()),
+                     sizeof(char[255]) * record.char_count);
+        if (record.int_v[pos] == value) {
+            return true;
+        }
+    }
+    return false;
 }
 
 //std::string FileHandler::search_data(Record &record) {

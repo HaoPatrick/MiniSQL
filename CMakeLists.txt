@@ -26,7 +26,9 @@ add_library(lib_api_connector src/API/API_c_connector.cpp src/API/API_c_connecto
 
 add_executable(db_test ${TEST_FILES})
 add_executable(db ${SOURCE_FILES})
+add_executable(db_benchmark ${TEST_DIR}/test_benchmark.cpp)
 
 target_link_libraries(db lib_buffer lib_tree lib_file_handler lib_catalog lib_record)
 target_link_libraries(db_test lib_tree lib_catch lib_file_handler lib_record lib_catalog lib_api)
+target_link_libraries(db_benchmark lib_tree lib_catch lib_file_handler lib_record lib_catalog lib_api)
 #target_link_libraries(db lib_tree)

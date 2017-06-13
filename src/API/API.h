@@ -8,9 +8,9 @@
 #include <vector>
 #include "../CatalogManager/Catalog.h"
 #include "../BufferManager/FileHandler.h"
-#include <boost/filesystem.hpp>
+//#include <boost/filesystem.hpp>
 
-namespace fs=boost::filesystem;
+//namespace fs=boost::filesystem;
 
 
 class API {
