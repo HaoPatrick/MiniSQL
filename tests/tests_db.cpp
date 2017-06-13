@@ -82,13 +82,19 @@ TEST_CASE("Catalog and Record Test", "[Catalog]") {
     record.char_v[0] = FixString("Hello hlh!");
 
 
-    aa.write_sample_data(record);
+    aa.write_sample_data(record, 30);
 
     Record result_record(catalog);
     std::string result_string = aa.read_data(3, record);
     REQUIRE(result_string == "3 24 3.141500 Hello hlh! ");
     result_string = aa.read_data(23, record);
     REQUIRE(result_string == "23 24 3.141500 Hello hlh! ");
+
+    aa.linear_search(result_record, 0, 10);
+    REQUIRE(result_record.int_v[0] == 10);
+
+    aa.linear_search(result_record, 0, 23);
+    REQUIRE(result_record.int_v[0] == 23);
 
     record.int_v[0] = 1111;
     record.float_v[0] = 2.718;
