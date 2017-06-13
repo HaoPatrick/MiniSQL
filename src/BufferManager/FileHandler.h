@@ -70,6 +70,10 @@ public:
 
     bool linear_search(Record &record, int pos, int value);
 
+    bool linear_search(Record &record, int pos, float value);
+
+    bool linear_search(Record &record, int pos, std::string value);
+
     BTree<int> build_tree();
 
     BTree<int> build_tree(unsigned int, Record);
@@ -84,7 +88,7 @@ public:
 
     void write_sample_data(DBHeader &, SampleRecord &);
 
-    void write_sample_data(Record,int);
+    void write_sample_data(Record, int);
 
     void append_data(SampleRecord, DBHeader);
 

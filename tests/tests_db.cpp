@@ -86,15 +86,36 @@ TEST_CASE("Catalog and Record Test", "[Catalog]") {
 
     Record result_record(catalog);
     std::string result_string = aa.read_data(3, record);
-    REQUIRE(result_string == "3 24 3.141500 Hello hlh! ");
+    REQUIRE(result_string == "3 24 3.010000 Hello hlh! ");
     result_string = aa.read_data(23, record);
-    REQUIRE(result_string == "23 24 3.141500 Hello hlh! ");
+    REQUIRE(result_string == "23 24 23.010000 Hello hlh! ");
 
-    aa.linear_search(result_record, 0, 10);
-    REQUIRE(result_record.int_v[0] == 10);
+    bool search_result;
+    SECTION("Linear int search") {
+        search_result = aa.linear_search(result_record, 0, 10);
+        REQUIRE(result_record.int_v[0] == 10);
+        REQUIRE(search_result);
 
-    aa.linear_search(result_record, 0, 23);
-    REQUIRE(result_record.int_v[0] == 23);
+        search_result = aa.linear_search(result_record, 0, 23);
+        REQUIRE(result_record.int_v[0] == 23);
+        REQUIRE(search_result);
+    }
+
+    SECTION("Linear float search") {
+        search_result = aa.linear_search(result_record, 0, (float) 10.01);
+        REQUIRE(result_record.float_v[0] == (float) 10.01);
+        REQUIRE(search_result);
+
+        search_result = aa.linear_search(result_record, 0, (float) 23.01);
+        REQUIRE(result_record.float_v[0] == (float) 23.01);
+        REQUIRE(search_result);
+    }
+    SECTION("Linear string search") {
+        search_result = aa.linear_search(result_record, 0, "Hello hlh!");
+        REQUIRE(result_record.int_v[0] == 0);
+        REQUIRE(search_result);
+    }
+
 
     record.int_v[0] = 1111;
     record.float_v[0] = 2.718;

@@ -154,6 +154,7 @@ void FileHandler::write_sample_data(Record record, int count) {
 
     for (auto i = 0; i < count; i++) {
         record.int_v[0] = i;
+        record.float_v[0] = i + (float) 0.01;
         out_file.write(reinterpret_cast<char *>(record.int_v.data()),
                        sizeof(int) * record.int_count);
         out_file.write(reinterpret_cast<char *>(record.float_v.data()),
@@ -250,6 +251,40 @@ bool FileHandler::linear_search(
         in_file.read(reinterpret_cast<char *>(record.char_v.data()),
                      sizeof(char[255]) * record.char_count);
         if (record.int_v[pos] == value) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool FileHandler::linear_search(Record &record, int pos, float value) {
+    in_file.clear();
+    in_file.seekg(sizeof(DB_file_header));
+    for (auto i = 0; i < DB_file_header.count; i++) {
+        in_file.read(reinterpret_cast<char *>(record.int_v.data()),
+                     sizeof(int) * record.int_count);
+        in_file.read(reinterpret_cast<char *>(record.float_v.data()),
+                     sizeof(float) * record.float_count);
+        in_file.read(reinterpret_cast<char *>(record.char_v.data()),
+                     sizeof(char[255]) * record.char_count);
+        if (record.float_v[pos] == value) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool FileHandler::linear_search(Record &record, int pos, std::string value) {
+    in_file.clear();
+    in_file.seekg(sizeof(DB_file_header));
+    for (auto i = 0; i < DB_file_header.count; i++) {
+        in_file.read(reinterpret_cast<char *>(record.int_v.data()),
+                     sizeof(int) * record.int_count);
+        in_file.read(reinterpret_cast<char *>(record.float_v.data()),
+                     sizeof(float) * record.float_count);
+        in_file.read(reinterpret_cast<char *>(record.char_v.data()),
+                     sizeof(char[255]) * record.char_count);
+        if (record.char_v[pos] == value) {
             return true;
         }
     }

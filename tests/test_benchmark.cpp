@@ -41,20 +41,34 @@ TEST_CASE("Catalog and Record Test", "[Catalog]") {
 
     Record result_record(catalog);
     std::string result_string = aa.read_data(3, record);
-    REQUIRE(result_string == "3 24 3.141500 Hello hlh! ");
-    result_string = aa.read_data(150, record);
-    REQUIRE(result_string == "150 24 3.141500 Hello hlh! ");
+    REQUIRE(result_string == "3 24 3.010000 Hello hlh! ");
+    aa.read_data(150, record);
+    REQUIRE(record.int_v[0] == 150);
 
+    SECTION("Int Bench") {
+        std::chrono::time_point<std::chrono::system_clock> start, end;
+        start = std::chrono::system_clock::now();
 
-    std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+        bool search_result = aa.linear_search(result_record, 0, 29999);
 
-    bool search_result = aa.linear_search(result_record, 0, 29999);
+        end = std::chrono::system_clock::now();
+        std::chrono::duration<double> elapsed_seconds = end - start;
+        std::cout << "Time elapsed(int) : " << elapsed_seconds.count() << std::endl;
 
-    end = std::chrono::system_clock::now();
-    std::chrono::duration<double> elapsed_seconds = end - start;
-    std::cout << "elapsed time: " << elapsed_seconds.count() << std::endl;
+        REQUIRE(search_result);
+        REQUIRE(result_record.int_v[0] == 29999);
+    }
+    SECTION("Float Bench") {
+        std::chrono::time_point<std::chrono::system_clock> start, end;
+        start = std::chrono::system_clock::now();
 
-    REQUIRE(search_result);
-    REQUIRE(result_record.int_v[0] == 29999);
+        bool search_result = aa.linear_search(result_record, 0, (float) 29999.01);
+
+        end = std::chrono::system_clock::now();
+        std::chrono::duration<double> elapsed_seconds = end - start;
+        std::cout << "Time elapsed(float) : " << elapsed_seconds.count() << std::endl;
+
+        REQUIRE(search_result);
+        REQUIRE(result_record.int_v[0] == (float) 29999);
+    }
 }
