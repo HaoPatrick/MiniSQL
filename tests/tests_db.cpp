@@ -5,6 +5,7 @@
 #include "../src/BufferManager/FileHandler.h"
 #include "../src/API/API.h"
 #include <cstring>
+#include <functional>
 #include "catch.hpp"
 
 TEST_CASE("Test API", "[API]") {
@@ -116,6 +117,28 @@ TEST_CASE("Catalog and Record Test", "[Catalog]") {
         REQUIRE(search_result);
     }
 
+    SECTION("Interval search int") {
+        std::vector<Record> result = aa.interval_search(0, 3, result_record, std::less<int>());
+        REQUIRE(result.size() == 3);
+
+        result = aa.interval_search(0, 3, result_record, std::less_equal<int>());
+        REQUIRE(result.size() == 4);
+        result = aa.interval_search(0, 3, result_record, std::greater<int>());
+        REQUIRE(result.size() == 26);
+        result = aa.interval_search(0, 3, result_record, std::greater_equal<int>());
+        REQUIRE(result.size() == 27);
+    }
+    SECTION("Interval search float") {
+        std::vector<Record> result = aa.interval_search(0, (float) 3.01, result_record, std::less<float>());
+        REQUIRE(result.size() == 3);
+
+        result = aa.interval_search(0, (float) 3.01, result_record, std::less_equal<float>());
+        REQUIRE(result.size() == 4);
+        result = aa.interval_search(0, (float) 3.01, result_record, std::greater<float>());
+        REQUIRE(result.size() == 26);
+        result = aa.interval_search(0, (float) 3.01, result_record, std::greater_equal<float>());
+        REQUIRE(result.size() == 27);
+    }
 
     record.int_v[0] = 1111;
     record.float_v[0] = 2.718;

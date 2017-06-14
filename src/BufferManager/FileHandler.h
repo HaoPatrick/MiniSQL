@@ -10,6 +10,7 @@
 #include "../RecordManager/Record.h"
 #include "../CatalogManager/Catalog.h"
 #include <cstring>
+#include <functional>
 
 #define BLOCK_SIZE 4096
 #define INDEX_PATH "db.idx"
@@ -74,6 +75,15 @@ public:
 
     bool linear_search(Record &record, int pos, std::string value);
 
+    std::vector<Record> interval_search(int pos, int value, Record sample_record, std::function<bool(int, int)> func);
+
+    std::vector<Record>
+    interval_search(int pos, float value, Record sample_record, std::function<bool(float, float)> func);
+
+    std::vector<Record>
+    interval_search(int pos, std::string value, Record sample_record,
+                    std::function<bool(FixString, std::string)> func);
+
     BTree<int> build_tree();
 
     BTree<int> build_tree(unsigned int, Record);
@@ -101,6 +111,4 @@ private:
     std::ifstream in_file;
     std::ofstream out_file;
 };
-
-
 

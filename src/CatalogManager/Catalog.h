@@ -39,6 +39,22 @@ struct FixString {
         return strncmp(this->value, outer.value, 255) == 0;
     }
 
+    bool operator>(const std::string &outer) {
+        return std::string(this->value) > outer;
+    }
+
+    bool operator>=(const std::string &outer) {
+        return std::string(this->value) >= outer;
+    }
+
+    bool operator<(const std::string &outer) {
+        return std::string(this->value) < outer;
+    }
+
+    bool operator<=(const std::string &outer) {
+        return std::string(this->value) <= outer;
+    }
+
     bool operator==(const char *outer) {
         return strncmp(this->value, outer, 255) == 0;
     }
@@ -62,6 +78,7 @@ public:
     size_t size();
 
     ptrdiff_t get_pos(FixString);
+
     ptrdiff_t get_pos(std::string);
 
     attr_type query_type(std::string);
