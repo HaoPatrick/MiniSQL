@@ -71,6 +71,8 @@ public:
     unsigned int int_count;
     unsigned int float_count;
     unsigned int char_count;
+
+//    unsigned int deleted_index[100];
     std::vector<FixString> attr_names;
 
     FixString table_name;

@@ -221,21 +221,20 @@ void FileHandler::append_data(SampleRecord record, DBHeader header) {
     rewrite_file.close();
 }
 
-void FileHandler::append_data(Record record) {
+void FileHandler::insert_record(Record record) {
     out_file.clear();
     out_file.write(reinterpret_cast<char *>(record.int_v.data()),
-                   sizeof(int) * record.int_v.size());
+                   sizeof(int) * record.int_count);
     out_file.write(reinterpret_cast<char *>(record.float_v.data()),
-                   sizeof(float) * record.float_v.size());
+                   sizeof(float) * record.float_count);
     out_file.write(reinterpret_cast<char *>(record.char_v.data()),
-                   sizeof(char[255]) * record.char_v.size());
+                   sizeof(char[255]) * record.char_count);
 
     std::ofstream rewrite_file(this->file_path, std::ios::binary | std::ios::in | std::ios::out);
-    DBHeader new_header = DB_file_header;
-    new_header.count += 1;
+    DB_file_header.count += 1;
     rewrite_file.clear();
     rewrite_file.seekp(0, std::ios::beg);
-    rewrite_file.write(reinterpret_cast<char *>(&new_header), sizeof(new_header));
+    rewrite_file.write(reinterpret_cast<char *>(&DB_file_header), sizeof(DB_file_header));
     rewrite_file.close();
 }
 

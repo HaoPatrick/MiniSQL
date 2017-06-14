@@ -24,10 +24,10 @@ TEST_CASE("Test API", "[API]") {
     instance.create_table(table_name, counts, attr_name);
     Catalog saved_catalog = instance.load_table("db_api");
 
-    REQUIRE(saved_catalog.attr_names[0] == "int0");
-    REQUIRE(saved_catalog.attr_names[3] == "char0");
-    REQUIRE(saved_catalog.table_name.to_string() == "db_api");
-    REQUIRE(saved_catalog.char_count == 1);
+    CHECK(saved_catalog.attr_names[0] == "int0");
+    CHECK(saved_catalog.attr_names[3] == "char0");
+    CHECK(saved_catalog.table_name.to_string() == "db_api");
+    CHECK(saved_catalog.char_count == 1);
 }
 
 TEST_CASE("Write and Load catalog", "[Catalog]") {
@@ -52,9 +52,9 @@ TEST_CASE("Write and Load catalog", "[Catalog]") {
     aa.write_catalog(catalog);
 
     Catalog result_catalog = aa.load_catalog();
-    REQUIRE(result_catalog.table_name.to_string() == "test table");
-    REQUIRE(result_catalog.attr_names[0].to_string() == "int 0");
-    REQUIRE(result_catalog.int_count == 2);
+    CHECK(result_catalog.table_name.to_string() == "test table");
+    CHECK(result_catalog.attr_names[0].to_string() == "int 0");
+    CHECK(result_catalog.int_count == 2);
 }
 
 TEST_CASE("Catalog and Record Test", "[Catalog]") {
@@ -87,65 +87,65 @@ TEST_CASE("Catalog and Record Test", "[Catalog]") {
 
     Record result_record(catalog);
     std::string result_string = aa.read_data(3, record);
-    REQUIRE(result_string == "3 24 3.010000 Hello hlh! ");
+    CHECK(result_string == "3 24 3.010000 Hello hlh! ");
     result_string = aa.read_data(23, record);
-    REQUIRE(result_string == "23 24 23.010000 Hello hlh! ");
+    CHECK(result_string == "23 24 23.010000 Hello hlh! ");
 
     bool search_result;
     SECTION("Linear int search") {
         search_result = aa.linear_search(result_record, 0, 10);
-        REQUIRE(result_record.int_v[0] == 10);
-        REQUIRE(search_result);
+        CHECK(result_record.int_v[0] == 10);
+        CHECK(search_result);
 
         search_result = aa.linear_search(result_record, 0, 23);
-        REQUIRE(result_record.int_v[0] == 23);
-        REQUIRE(search_result);
+        CHECK(result_record.int_v[0] == 23);
+        CHECK(search_result);
     }
 
     SECTION("Linear float search") {
         search_result = aa.linear_search(result_record, 0, (float) 10.01);
-        REQUIRE(result_record.float_v[0] == (float) 10.01);
-        REQUIRE(search_result);
+        CHECK(result_record.float_v[0] == (float) 10.01);
+        CHECK(search_result);
 
         search_result = aa.linear_search(result_record, 0, (float) 23.01);
-        REQUIRE(result_record.float_v[0] == (float) 23.01);
-        REQUIRE(search_result);
+        CHECK(result_record.float_v[0] == (float) 23.01);
+        CHECK(search_result);
     }
     SECTION("Linear string search") {
         search_result = aa.linear_search(result_record, 0, "Hello hlh!");
-        REQUIRE(result_record.int_v[0] == 0);
-        REQUIRE(search_result);
+        CHECK(result_record.int_v[0] == 0);
+        CHECK(search_result);
     }
 
     SECTION("Interval search int") {
         std::vector<Record> result = aa.interval_search(0, 3, result_record, std::less<int>());
-        REQUIRE(result.size() == 3);
+        CHECK(result.size() == 3);
 
         result = aa.interval_search(0, 3, result_record, std::less_equal<int>());
-        REQUIRE(result.size() == 4);
+        CHECK(result.size() == 4);
         result = aa.interval_search(0, 3, result_record, std::greater<int>());
-        REQUIRE(result.size() == 26);
+        CHECK(result.size() == 26);
         result = aa.interval_search(0, 3, result_record, std::greater_equal<int>());
-        REQUIRE(result.size() == 27);
+        CHECK(result.size() == 27);
     }
     SECTION("Interval search float") {
         std::vector<Record> result = aa.interval_search(0, (float) 3.01, result_record, std::less<float>());
-        REQUIRE(result.size() == 3);
+        CHECK(result.size() == 3);
 
         result = aa.interval_search(0, (float) 3.01, result_record, std::less_equal<float>());
-        REQUIRE(result.size() == 4);
+        CHECK(result.size() == 4);
         result = aa.interval_search(0, (float) 3.01, result_record, std::greater<float>());
-        REQUIRE(result.size() == 26);
+        CHECK(result.size() == 26);
         result = aa.interval_search(0, (float) 3.01, result_record, std::greater_equal<float>());
-        REQUIRE(result.size() == 27);
+        CHECK(result.size() == 27);
     }
 
     record.int_v[0] = 1111;
     record.float_v[0] = 2.718;
     record.char_v[0] = FixString("Great WBX");
-    aa.append_data(record);
+    aa.insert_record(record);
     result_string = aa.read_data(31, record);
-    REQUIRE(result_string == "1111 24 2.718000 Great WBX ");
+    CHECK(result_string == "1111 24 2.718000 Great WBX ");
 }
 
 TEST_CASE("Buffer Test", "[Buffer]") {
@@ -170,14 +170,14 @@ TEST_CASE("Buffer Test", "[Buffer]") {
 
     SECTION("Read & Write Test") {
         result_string = aa.read_data(29, test_data);
-        REQUIRE(result_string == "Great wbx 29 87");
+        CHECK(result_string == "Great wbx 29 87");
     }
 
     SECTION("Build tree Test") {
         BTree<int> tree = aa.build_tree();
         std::string result("");
         tree.traverse(result);
-        REQUIRE(result == " 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29");
+        CHECK(result == " 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29");
     }
 
     SECTION("Write & Load tree Test") {
@@ -187,7 +187,7 @@ TEST_CASE("Buffer Test", "[Buffer]") {
         BTree<int> tree2(3);
         aa.load_tree(tree2);
         tree2.traverse(result);
-        REQUIRE(result == " 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29");
+        CHECK(result == " 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29");
     }
 
     SECTION("Append data Test") {
@@ -195,7 +195,7 @@ TEST_CASE("Buffer Test", "[Buffer]") {
         test_data.views = 77;
         aa.append_data(test_data, test_header);
         result_string = aa.read_data(30, test_data);
-        REQUIRE(result_string == "Great wbx 77 42");
+        CHECK(result_string == "Great wbx 77 42");
     }
 
 }
@@ -230,27 +230,27 @@ TEST_CASE("B Tree Test", "[B Tree]") {
 
     SECTION("Traverse Test") {
         t.traverse(result);
-        REQUIRE(result == " 1 2 3 4 5 6 7 10 11 12 13 14 15 16 17 18 19 20 21 22 24 25 26");
+        CHECK(result == " 1 2 3 4 5 6 7 10 11 12 13 14 15 16 17 18 19 20 21 22 24 25 26");
 
         std::vector<std::pair<int, int>> result_v;
         t.traverse(result_v);
-        REQUIRE(result_v[0].first == 1);
-        REQUIRE(result_v[3].first == 4);
+        CHECK(result_v[0].first == 1);
+        CHECK(result_v[3].first == 4);
     }
     SECTION("Search Test") {
         int k = 6;
-        REQUIRE(t.search(k)->second == 10);
+        CHECK(t.search(k)->second == 10);
         k = 190;
-        REQUIRE(t.search(k) == NULL);
+        CHECK(t.search(k) == NULL);
     }
     SECTION("Delete Test") {
         t.remove(6);
         t.traverse(result);
-        REQUIRE(result == " 1 2 3 4 5 7 10 11 12 13 14 15 16 17 18 19 20 21 22 24 25 26");
+        CHECK(result == " 1 2 3 4 5 7 10 11 12 13 14 15 16 17 18 19 20 21 22 24 25 26");
 
         result = "";
         t.remove(13);
         t.traverse(result);
-        REQUIRE(result == " 1 2 3 4 5 7 10 11 12 14 15 16 17 18 19 20 21 22 24 25 26");
+        CHECK(result == " 1 2 3 4 5 7 10 11 12 14 15 16 17 18 19 20 21 22 24 25 26");
     }
 }

@@ -27,10 +27,16 @@ struct DBHeader {
     uint32_t count;
     char db_name[32];
     FileType type;
+
+    std::vector<int> delete_index;
     unsigned int int_count;
     unsigned int float_count;
     unsigned int char_count;
     unsigned int check_value;
+
+    DBHeader() {
+        this->delete_index.resize(100);
+    }
 };
 
 struct SampleRecord {
@@ -102,7 +108,7 @@ public:
 
     void append_data(SampleRecord, DBHeader);
 
-    void append_data(Record);
+    void insert_record(Record);
 
 private:
     DBHeader DB_file_header;
