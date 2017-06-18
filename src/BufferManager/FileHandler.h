@@ -11,9 +11,8 @@
 #include "../CatalogManager/Catalog.h"
 #include <cstring>
 #include <functional>
+#include <algorithm>
 
-#define BLOCK_SIZE 4096
-#define INDEX_PATH "db.idx"
 
 enum FileType {
     table,
@@ -28,15 +27,17 @@ struct DBHeader {
     char db_name[32];
     FileType type;
 
-    std::vector<int> delete_index;
-    unsigned int int_count;
-    unsigned int float_count;
-    unsigned int char_count;
+//    unsigned int int_count;
+//    unsigned int float_count;
+//    unsigned int char_count;
     unsigned int check_value;
+    unsigned int delete_pos;
 
-    DBHeader() {
-        this->delete_index.resize(100);
-    }
+//    std::vector<unsigned int> delete_index;
+//
+//    DBHeader() {
+//        this->delete_index.resize(100);
+//    }
 };
 
 struct SampleRecord {
@@ -56,6 +57,10 @@ public:
 
     FileHandler();
 
+    void read_header();
+
+    void write_header(DBHeader);
+
     ~FileHandler() {
         in_file.close();
         out_file.close();
@@ -73,7 +78,7 @@ public:
 
     std::string search_data();
 
-    std::string read_data(unsigned, Record &record);
+    std::string read_data(unsigned int, Record &record);
 
     bool linear_search(Record &record, int pos, int value);
 
@@ -116,5 +121,7 @@ private:
     std::string file_path;
     std::ifstream in_file;
     std::ofstream out_file;
+
+
 };
 

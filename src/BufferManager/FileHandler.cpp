@@ -179,9 +179,12 @@ std::string FileHandler::read_data(uint32_t index, SampleRecord &record) {
     return result;
 }
 
-std::string FileHandler::read_data(unsigned index, Record &record) {
+std::string FileHandler::read_data(unsigned int index, Record &record) {
     std::string result;
-
+//    if (DB_file_header.delete_index.end() !=
+//        std::find(DB_file_header.delete_index.begin(), DB_file_header.delete_index.end(), index)) {
+//        return false;
+//    }
     in_file.clear();
     in_file.seekg(index * (sizeof(int) * record.int_count +
                            sizeof(float) * record.float_count + sizeof(char) * 255 * record.char_count) +
