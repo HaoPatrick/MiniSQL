@@ -1,27 +1,54 @@
-CC = cc -g
-LEX = flex
-YACC = bison
-CFLAGS = -DYYDEBUG=1
+CC    ?= clang
+CXX   ?= clang++
 
-PROGRAMS = sql.exe
+EXE = my_wc
 
-all:	${PROGRAMS} clean
+CDEBUG = -g -Wall
 
-sql.exe:	sql.tab.o sql.o
-	${CC} -L../API -lapi_c_conn -lapi sql.tab.o sql.o -o $@ 
- 
+CXXDEBUG = -g -Wall
 
-sql.tab.c sql.tab.h:	sql.y
-	${YACC} -vd sql.y
+CSTD = -std=c99
+CXXSTD = -std=c++14
 
-sql.c:	sql.l
-	${LEX} -o $@ $<
-
-sql.o:	sql.c sql.tab.h
+CFLAGS = -Wno-deprecated-register -O0  $(CDEBUG) $(CSTD) 
+CXXFLAGS = -Wno-deprecated-register -O0  $(CXXDEBUG) $(CXXSTD)
 
 
+CPPOBJ = main mc_driver
+SOBJ =  parser lexer
+
+FILES = $(addsuffix .cpp, $(CPPOBJ))
+
+OBJS  = $(addsuffix .o, $(CPPOBJ))
+
+CLEANLIST =  $(addsuffix .o, $(OBJ)) $(OBJS) \
+				 mc_parser.tab.cc mc_parser.tab.hh \
+				 location.hh position.hh \
+			    stack.hh mc_parser.output parser.o \
+				 lexer.o mc_lexer.yy.cc\
+
+.PHONY: all
+all: wc clean
+
+wc: $(FILES)
+	$(MAKE) $(SOBJ)
+	$(MAKE) $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(EXE) $(OBJS) parser.o lexer.o $(LIBS)
+
+
+parser: mc_parser.yy
+	bison -d -v mc_parser.yy
+	$(CXX) $(CXXFLAGS) -c -o parser.o mc_parser.tab.cc
+
+lexer: mc_lexer.l
+	flex --outfile=mc_lexer.yy.cc  $<
+	$(CXX)  $(CXXFLAGS) -c mc_lexer.yy.cc -o lexer.o
+
+.PHONY: test
+test:
+	test/test0.pl
+
+.PHONY: clean
 clean:
-	rm -f sql.tab.c sql.tab.h sql.c sql.tab.o sql.o  sql.output
-
-.SUFFIXES:	.l .y .c
+	rm -rf $(CLEANLIST)
 
