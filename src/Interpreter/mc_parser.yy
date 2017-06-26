@@ -303,6 +303,8 @@
 %type <int> column_list
 %type <int> delete_opts delete_list
 %type <int> insert_opts insert_vals insert_vals_list
+%type <int>  opt_length opt_binary opt_uz 
+%type <int> column_atts data_type create_col_list
 
 
 %start stmt_list
@@ -455,6 +457,71 @@ stmt: drop_table_stmt {}
     ;
 drop_table_stmt: DROP TABLE NAME {driver.drop_table($3);}
     ;
+
+
+   /** create table **/
+stmt: create_table_stmt { driver.emit("STMT"); }
+   ;
+
+create_table_stmt: CREATE TABLE NAME
+   '(' create_col_list ')' { driver.emit("CREATETABLE"); }
+   ;
+
+create_col_list: create_definition { $$ = 1; }
+    | create_col_list ',' create_definition { $$ = $1 + 1; }
+    ;
+
+create_definition: { driver.emit("STARTCOL"); } NAME data_type column_atts
+                   { driver.emit("COLUMNDEF"); }
+
+    | PRIMARY KEY '(' column_list ')'    { driver.emit("PRIKEY"); }
+    | KEY '(' column_list ')'            { driver.emit("KEY"); }
+    | INDEX '(' column_list ')'          { driver.emit("KEY"); }
+    | FULLTEXT INDEX '(' column_list ')' { driver.emit("TEXTINDEX"); }
+    | FULLTEXT KEY '(' column_list ')'   { driver.emit("TEXTINDEX"); }
+    ;
+
+column_atts: /* nil */ { $$ = 0; }
+    | column_atts NOT NULLX             { driver.emit("ATTR NOTNULL"); $$ = $1 + 1; }
+    | column_atts NULLX
+    | column_atts AUTO_INCREMENT        { driver.emit("ATTR AUTOINC"); $$ = $1 + 1; }
+    | column_atts UNIQUE '(' column_list ')' { driver.emit("ATTR UNIQUEKEY"); $$ = $1 + 1; }
+    | column_atts UNIQUE KEY { driver.emit("ATTR UNIQUEKEY"); $$ = $1 + 1; }
+    | column_atts PRIMARY KEY { driver.emit("ATTR PRIKEY"); $$ = $1 + 1; }
+    | column_atts KEY { driver.emit("ATTR PRIKEY"); $$ = $1 + 1; }
+    ;
+
+opt_length: /* nil */ { $$ = 0; }
+   | '(' INTNUM ')' { $$ = $2; }
+   | '(' INTNUM ',' INTNUM ')' { $$ = $2 + 1000*$4; }
+   ;
+
+opt_binary: /* nil */ { $$ = 0; }
+   | BINARY { $$ = 4000; }
+   ;
+
+opt_uz: /* nil */ { $$ = 0; }
+   | opt_uz UNSIGNED { $$ = $1 | 1000; }
+   | opt_uz ZEROFILL { $$ = $1 | 2000; }
+   ;
+
+opt_csc: /* nil */
+   | opt_csc CHAR SET STRING { driver.emit("COLCHARSET %s"); }
+   | opt_csc COLLATE STRING { driver.emit("COLCOLLATE %s");  }
+   ;
+
+data_type:
+    INT opt_length opt_uz { $$ = 40000 + $2 + $3; }
+   | INTEGER opt_length opt_uz { $$ = 50000 + $2 + $3; }
+   | DOUBLE opt_length opt_uz { $$ = 80000 + $2 + $3; }
+   | FLOAT opt_length opt_uz { $$ = 90000 + $2 + $3; }
+   | TIMESTAMP { $$ = 100003; }
+   | CHAR opt_length opt_csc { $$ = 120000 + $2; }
+   | VARCHAR '(' INTNUM ')' opt_csc { $$ = 130000 + $3; }
+   | TEXT opt_binary opt_csc { $$ = 171000 + $2; }
+   ;
+
+
 
    /**** expressions ****/
 
