@@ -8,6 +8,10 @@ set(CMAKE_CXX_STANDARD 14)
 #IF (Boost_FOUND)
 #    include_directories(${Boost_INCLUDE_DIR})
 #endif()
+#set(FLEX_ROOT "C:\\Program Files\\flex_bison")
+#set(BISON_ROOT "C:\\Program Files\\flex_bison")
+find_package(BISON REQUIRED)
+find_package(FLEX REQUIRED)
 
 
 set(SOURCE_FILES src/main.cpp src/IndexManager/utils.h)

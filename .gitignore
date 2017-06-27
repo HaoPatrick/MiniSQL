@@ -3,6 +3,7 @@
 # Prerequisites
 *.d
 
+my_mc
 # Compiled Object files
 *.slo
 *.lo

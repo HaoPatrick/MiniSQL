@@ -140,3 +140,13 @@ MC::MC_Driver::print(std::ostream &stream)
     stream << blue << "Characters: " << norm << chars << "\n";
     return (stream);
 }
+
+void MC::MC_Driver::add_column(std::string name, int type)
+{
+    this->names.push_back(name);
+    this->types.push_back(type);
+}
+
+void MC::MC_Driver::clear_table_info()
+{
+}

@@ -4,6 +4,7 @@
 #include <string>
 #include <cstddef>
 #include <istream>
+#include <vector>
 
 #include "mc_scanner.hpp"
 #include "mc_parser.tab.hh"
@@ -32,6 +33,10 @@ public:
    void add_word( const std::string &word );
    void add_newline();
    void add_char();
+
+   void add_column(std::string, int);
+   void clear_table_info();
+
    void create_index(std::string index_name, std::string table_name, std::string column_name);
    void drop_index(std::string index_name);
    void drop_table(std::string table_name);
@@ -41,6 +46,11 @@ public:
 private:
 
    void parse_helper( std::istream &stream );
+
+   std::vector<std::string> names;
+   std::vector<int> types;
+   std::string table_name;
+   std::string column_name;
 
    std::size_t  chars      = 0;
    std::size_t  words      = 0;
