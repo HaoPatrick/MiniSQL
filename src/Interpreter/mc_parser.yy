@@ -330,7 +330,7 @@
 //   | HLH     {driver.test_display($1); }
 //   ;
 
-stmt_list: stmt ';' { std::cout<<"> ";}
+stmt_list: stmt ';' { std::cout<<"> ";driver.debug_info();}
   | stmt_list stmt ';' {}
   ;
 
@@ -350,8 +350,8 @@ select_stmt: SELECT  select_expr_list
 opt_where: /* nil */ 
    | WHERE expr { driver.emit("WHERE"); };
 
-column_list: NAME { driver.emit("COLUMN"); $$ = 1; }
-  | column_list ',' NAME  { driver.emit("COLUMN"); $$ = $1 + 1; }
+column_list: NAME { driver.emit("COLUMN");driver.add_column($1); $$ = 1; }
+  | column_list ',' NAME  { driver.emit("COLUMN");driver.add_column($3);  $$ = $1 + 1; }
   ;
 
 select_expr_list: select_expr { $$ = 1; }
@@ -465,7 +465,8 @@ stmt: create_table_stmt { driver.emit("STMT"); }
    ;
 
 create_table_stmt: CREATE TABLE NAME
-   '(' create_col_list ')' { driver.emit("CREATETABLE"); }
+   '(' create_col_list ')' { driver.emit("CREATETABLE");
+                            driver.set_table_name($3); }
    ;
 
 create_col_list: create_definition { $$ = 1; }
@@ -473,7 +474,7 @@ create_col_list: create_definition { $$ = 1; }
     ;
 
 create_definition: { driver.emit("STARTCOL"); } NAME data_type column_atts
-                   { driver.emit("COLUMNDEF"); }
+                   { driver.emit("COLUMNDEF");driver.add_column_type($3);driver.add_column($2);}
 
     | PRIMARY KEY '(' column_list ')'    { driver.emit("PRIKEY"); }
     | KEY '(' column_list ')'            { driver.emit("KEY"); }
