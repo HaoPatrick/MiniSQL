@@ -1,6 +1,7 @@
 %skeleton "lalr1.cc"
 %require  "3.0"
 %debug 
+%error-verbose
 %defines 
 %define api.namespace {MC}
 %define parser_class_name {MC_Parser}

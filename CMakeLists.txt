@@ -8,11 +8,39 @@ set(CMAKE_CXX_STANDARD 14)
 #IF (Boost_FOUND)
 #    include_directories(${Boost_INCLUDE_DIR})
 #endif()
-#set(FLEX_ROOT "C:\\Program Files\\flex_bison")
-#set(BISON_ROOT "C:\\Program Files\\flex_bison")
+
+set(FLEX_EXECUTABLE "C:\\Program Files\\flex_bison\\flex")
+set(BISON_EXECUTABLE "C:\\Program Files\\flex_bison\\bison")
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
 
+set(INTER_PATH src/Interpreter)
+BISON_TARGET(mc_parser
+        ${INTER_PATH}/mc_parser.yy
+        ${CMAKE_CURRENT_BINARY_DIR}/mc_parser.tab.cc)
+
+FLEX_TARGET(mc_lexer
+        ${INTER_PATH}/mc_lexer.l
+        ${CMAKE_CURRENT_BINARY_DIR}/mc_lexer.yy.cc)
+
+ADD_FLEX_BISON_DEPENDENCY(mc_lexer mc_parser)
+
+add_executable(my_wc
+        ${INTER_PATH}/main.cpp
+        ${INTER_PATH}/mc_driver.cpp
+        ${FLEX_mc_lexer_OUTPUTS}
+        ${BISON_mc_parser_OUTPUTS}
+        )
+
+target_include_directories(my_wc
+        PRIVATE
+        ${INTER_PATH}
+        .
+        ${CMAKE_CURRENT_BINARY_DIR}
+        )
+
+set_property(TARGET my_wc
+        PROPERTY CXX_STANDARD 14)
 
 set(SOURCE_FILES src/main.cpp src/IndexManager/utils.h)
 set(TEST_DIR tests)

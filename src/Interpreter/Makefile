@@ -1,7 +1,7 @@
 CC    ?= clang
 CXX   ?= clang++
 
-EXE = my_wc
+EXE = my_wc.exe
 
 CDEBUG = -g -Wall
 
