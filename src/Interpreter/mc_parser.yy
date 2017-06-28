@@ -330,8 +330,8 @@
 //   | HLH     {driver.test_display($1); }
 //   ;
 
-stmt_list: stmt ';' { std::cout<<"> ";driver.debug_info();}
-  | stmt_list stmt ';' {}
+stmt_list: stmt ';' {driver.debug_info();driver.clear_all(); std::cout<<"> ";}
+  | stmt_list stmt ';' {driver.debug_info();driver.clear_all(); std::cout<<"> ";}
   ;
 
 stmt: select_stmt { driver.emit("STMT");
@@ -412,7 +412,7 @@ stmt: insert_stmt { driver.emit("STMT"); }
 insert_stmt: INSERT insert_opts opt_into NAME
      opt_col_names
      VALUES insert_vals_list
-      { driver.emit("INSERTVALS %d %d %s"); }
+      { driver.emit("INSERTVALS %d %d %s");driver.set_column_name($4); }
    ;
 
 
@@ -461,7 +461,7 @@ drop_table_stmt: DROP TABLE NAME {driver.drop_table($3);}
 
 
    /** create table **/
-stmt: create_table_stmt { driver.emit("STMT"); }
+stmt: create_table_stmt { driver.emit("STMT");}
    ;
 
 create_table_stmt: CREATE TABLE NAME
@@ -530,9 +530,9 @@ data_type:
 expr: NAME          { driver.emit("NAME"); }
    | USERVAR         { driver.emit("USERVAR");  }
    | NAME '.' NAME { driver.emit("FIELDNAME "); }
-   | STRING        { driver.emit("STRING"); }
-   | INTNUM        { driver.emit("NUMBER"); }
-   | APPROXNUM     { driver.emit("FLOAT"); }
+   | STRING        { driver.emit("STRING");driver.add_value($1); }
+   | INTNUM        { driver.emit("NUMBER");driver.add_value($1); }
+   | APPROXNUM     { driver.emit("FLOAT"); driver.add_value($1);}
    | BOOL          { driver.emit("BOOL"); }
    ;
 

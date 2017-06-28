@@ -42,10 +42,26 @@ namespace MC {
 
         void add_column(std::string, attr_type);
 
-        void clear_table_info();
+        void clear_all();
 
         void set_table_name(std::string name) {
             this->table_name = name;
+        }
+
+        void set_column_name(std::string name) {
+            this->column_name = name;
+        }
+
+        void add_value(std::string value) {
+            this->string_values.push_back(value);
+        }
+
+        void add_value(int value) {
+            this->int_values.push_back(value);
+        }
+
+        void add_value(float value) {
+            this->float_values.push_back(value);
         }
 
         void add_column(std::string);
@@ -72,6 +88,14 @@ namespace MC {
         std::vector<attr_type> types;
         std::string table_name;
         std::string column_name;
+
+        std::vector<std::string> string_values;
+        std::vector<int> int_values;
+        std::vector<float> float_values;
+
+        std::string where_cloumn;
+        std::string where_operator;
+        std::string where_value;
 
         std::size_t chars = 0;
         std::size_t words = 0;

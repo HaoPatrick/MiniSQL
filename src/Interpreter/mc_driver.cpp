@@ -122,11 +122,14 @@ void MC::MC_Driver::add_column(std::string name, attr_type type) {
     this->types.push_back(type);
 }
 
-void MC::MC_Driver::clear_table_info() {
+void MC::MC_Driver::clear_all() {
     this->column_names.clear();
     this->types.clear();
     this->table_name = "";
     this->column_name = "";
+    this->float_values.clear();
+    this->int_values.clear();
+    this->string_values.clear();
 }
 
 void MC::MC_Driver::add_column(std::string name) {
@@ -148,12 +151,25 @@ void MC::MC_Driver::add_column_type(int type) {
 }
 
 void MC::MC_Driver::debug_info() {
-    std::cout << table_name << " - ";
+    std::cout << "Table name: " + table_name + " - Column name:" + column_name + "\n";
+    std::cout << "column names: ";
     for (auto value:this->column_names) {
-        std::cout << value;
+        std::cout << value + " ";
     }
+    std::cout << "type names: ";
     for (auto value:this->types) {
-        std::cout << value;
+        std::cout << value << " ";
+    }
+
+    std::cout << "values:";
+    for (auto value:this->int_values) {
+        std::cout << value << " ";
+    }
+    for (auto value:this->float_values) {
+        std::cout << value << " ";
+    }
+    for (auto value:this->string_values) {
+        std::cout << value << " ";
     }
     std::cout << std::endl;
 //    column_names.data() << " - " << types.data() << std::endl;
