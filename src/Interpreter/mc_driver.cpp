@@ -64,11 +64,11 @@ void MC::MC_Driver::add_upper() {
 }
 
 void MC::MC_Driver::create_index(std::string index_name, std::string table_name, std::string column_name) {
-    std::cout << "create index " << index_name << " on " << table_name << "(" << column_name << ")" << std::endl;
+    std::cout << "create index_type " << index_name << " on " << table_name << "(" << column_name << ")" << std::endl;
 }
 
 void MC::MC_Driver::drop_index(std::string index_name) {
-    std::cout << "index " << index_name << " dropped" << std::endl;
+    std::cout << "index_type " << index_name << " dropped" << std::endl;
 }
 
 void MC::MC_Driver::drop_table(std::string table_name) {
@@ -173,4 +173,19 @@ void MC::MC_Driver::debug_info() {
     }
     std::cout << std::endl;
 //    column_names.data() << " - " << types.data() << std::endl;
+}
+
+void MC::MC_Driver::create_table() {
+//    API table;
+//    std::vector<unsigned int> type_count;
+//    unsigned int int_count = (unsigned int) std::count(
+//            this->types.begin(), this->types.end(), attr_int);
+//    unsigned int float_count = (unsigned int) std::count(
+//            this->types.begin(), this->types.end(), attr_float);
+//    unsigned int string_count = (unsigned int) std::count(
+//            this->types.begin(), this->types.end(), attr_char);
+//    type_count.push_back(int_count);
+//    type_count.push_back(float_count);
+//    type_count.push_back(string_count);
+//    table.create_table(this->table_name, type_count, this->column_names);
 }

@@ -15,9 +15,9 @@
 
 
 enum FileType {
-    table,
-    index,
-    catalog
+    table_type,
+    index_type,
+    catalog_type
 };
 
 

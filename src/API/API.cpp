@@ -36,11 +36,11 @@ void API::create_index(std::string index_name,
     }
     Record sample_record(catalog);
     unsigned int int_pos = (unsigned int) catalog.get_pos(column_name);
-    FileHandler table_file("table_" + table_name + ".hlh", FileType(table));
+    FileHandler table_file("table_" + table_name + ".hlh", FileType(table_type));
     BTree<int> tree = table_file.build_tree(int_pos, sample_record);
 
     FileHandler index_file("index_" + index_name + ".hlh",
-                           FileType(index));
+                           FileType(index_type));
     index_file.write_tree(tree);
 }
 

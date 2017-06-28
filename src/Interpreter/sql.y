@@ -421,7 +421,7 @@ insert_asgn_list:
                  emit("DEFAULT"); emit("ASSIGN %s", $3); free($3); $$ = $1 + 1; }
    ;
 
-   /** create index **/
+   /** create index_type **/
 stmt: create_index_stmt { emit("STMT"); }
    ;
 
@@ -429,7 +429,7 @@ create_index_stmt: CREATE KEY NAME ON NAME
    '(' NAME ')' { create_index_test($3,$5,$7); emit("CREATEIDX %s %s %s", $3,$5, $7); free($7); free($3);free($5); }
    ;
 
-   /** drop index **/
+   /** drop index_type **/
 stmt: drop_index_stmt {emit("STMT");}
     ;
 

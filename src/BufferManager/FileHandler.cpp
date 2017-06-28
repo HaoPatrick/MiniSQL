@@ -73,7 +73,7 @@ void FileHandler::write_tree(BTree<int> b_tree) {
     b_tree.traverse(result);
     DBHeader index_header;
     index_header.count = (uint32_t) result.size();
-    index_header.type = index;
+    index_header.type = index_type;
     std::ofstream out_file(this->file_path, std::ios::binary);
     out_file.write(reinterpret_cast<char *>(&index_header), sizeof(index_header));
     out_file.write(reinterpret_cast<char *>(result.data()), sizeof(result[0]) * result.size());
@@ -124,7 +124,7 @@ void FileHandler::load_tree(BTree<int> &b_tree) {
 
     std::ifstream in_file(this->file_path, std::ios::binary);
     in_file.read(reinterpret_cast<char *>(&index_header), sizeof(index_header));
-    if (index_header.type != index || index_header.count <= 0) {
+    if (index_header.type != index_type || index_header.count <= 0) {
         return;
     }
     result.resize(index_header.count);
@@ -182,7 +182,7 @@ std::string FileHandler::read_data(uint32_t index, SampleRecord &record) {
 std::string FileHandler::read_data(unsigned int index, Record &record) {
     std::string result;
 //    if (DB_file_header.delete_index.end() !=
-//        std::find(DB_file_header.delete_index.begin(), DB_file_header.delete_index.end(), index)) {
+//        std::find(DB_file_header.delete_index.begin(), DB_file_header.delete_index.end(), index_type)) {
 //        return false;
 //    }
     in_file.clear();
@@ -362,7 +362,7 @@ FileHandler::interval_search(int pos, std::string value, Record sample_record,
 //    std::string result;
 //
 //    in_file.clear();
-//    in_file.seekg(index * (sizeof(int) * record.int_count +
+//    in_file.seekg(index_type * (sizeof(int) * record.int_count +
 //                           sizeof(float) * record.float_count + sizeof(char) * 255 * record.char_count) +
 //                  sizeof(DB_file_header));
 //    return std::string();

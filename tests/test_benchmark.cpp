@@ -14,7 +14,7 @@ using namespace std::chrono;
 TEST_CASE("Catalog and Record Test", "[Catalog]") {
     DBHeader test_header;
     strncpy(test_header.db_name, "HLH DB", sizeof(test_header.db_name) - 1);
-    test_header.type = table;
+    test_header.type = table_type;
     test_header.count = 30;
 //    test_header.int_count = 2;
 //    test_header.float_count = 1;

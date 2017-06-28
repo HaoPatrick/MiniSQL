@@ -461,7 +461,7 @@ drop_table_stmt: DROP TABLE NAME {driver.drop_table($3);}
 
 
    /** create table **/
-stmt: create_table_stmt { driver.emit("STMT");}
+stmt: create_table_stmt { driver.emit("STMT"); driver.create_table();}
    ;
 
 create_table_stmt: CREATE TABLE NAME
