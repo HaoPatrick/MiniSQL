@@ -334,7 +334,7 @@ stmt_list: stmt ';' {driver.debug_info();driver.clear_all(); std::cout<<"> ";}
   | stmt_list stmt ';' {driver.debug_info();driver.clear_all(); std::cout<<"> ";}
   ;
 
-stmt: select_stmt { driver.emit("STMT");
+stmt: select_stmt { driver.emit("STMT"); driver.execute_select();
                     }
    ;
 
@@ -356,7 +356,7 @@ column_list: NAME { driver.emit("COLUMN");driver.add_column($1); $$ = 1; }
 
 select_expr_list: select_expr { $$ = 1; }
     | select_expr_list ',' select_expr {$$ = $1 + 1; }
-    | '*' { driver.emit("SELECTALL"); $$ = 1; }
+    | '*' { driver.emit("SELECTALL");driver.set_select_all(true); $$ = 1; }
     ;
 
 select_expr: expr ;
@@ -369,7 +369,7 @@ table_reference:  table_factor
 ;
 
 table_factor:
-    NAME {driver.emit("TABLE");}
+    NAME {driver.emit("TABLE");driver.set_table_name($1);}
 
 
    /* statements: delete statement */

@@ -74,5 +74,17 @@ void API::insert_value(std::string table_name, std::vector<int> int_values, std:
 //    std::cout<<"OK";
 }
 
+std::vector<Record> API::select_all() {
+    std::vector<Record> result;
+    FileHandler db_file("table_" + table_name + ".hlh");
 
+    Catalog catalog = this->load_table(this->table_name);
+    Record sample_record(catalog);
+    result = db_file.select_all(sample_record);
+    return result;
+}
+
+API::API(std::string table_name) {
+    this->table_name = table_name;
+}
 

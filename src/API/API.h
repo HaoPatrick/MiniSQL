@@ -16,6 +16,8 @@
 
 class API {
 public:
+    API(std::string table_name);
+
     void create_index(char *a, char *b, char *c) {
         std::cout << a << b << c << std::endl;
     }
@@ -36,11 +38,15 @@ public:
                       std::string table_name,
                       std::string column_name);
 
+    std::vector<Record> select_all();
+
     Record search_item(std::string table_name, std::string column_name, int int_value);
 
     Record search_item(std::string table_name, std::string column_name, float float_value);
 
     Record search_item(std::string table_name, std::string column_name, std::string char_value);
 
+private:
+    std::string table_name;
 };
 

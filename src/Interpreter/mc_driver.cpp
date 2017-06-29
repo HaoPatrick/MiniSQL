@@ -176,7 +176,7 @@ void MC::MC_Driver::debug_info() {
 }
 
 void MC::MC_Driver::create_table() {
-    API table;
+    API table(this->table_name);
     std::vector<unsigned int> type_count;
     unsigned int int_count = (unsigned int) std::count(
             this->types.begin(), this->types.end(), attr_int);
@@ -193,7 +193,7 @@ void MC::MC_Driver::create_table() {
 }
 
 void MC::MC_Driver::show_table_info(std::string table_name) {
-    API table;
+    API table(table_name);
     Catalog catalog = table.load_table(table_name);
     std::cout << catalog.table_name.to_string();
     for (auto item :catalog.attr_names) {
@@ -203,10 +203,33 @@ void MC::MC_Driver::show_table_info(std::string table_name) {
 }
 
 void MC::MC_Driver::insert_value() {
-    API table;
+    API table(this->table_name);
     table.insert_value(this->table_name,
                        this->int_values,
                        this->float_values,
                        this->string_values);
-    std::cout<<"OK";
+//    std::cout<<"OK";
+}
+
+void MC::MC_Driver::execute_select() {
+    API table(this->table_name);
+    std::vector<Record> result = table.select_all();
+
+    this->print_them(result);
+}
+
+void MC::MC_Driver::print_them(std::vector<Record> results) {
+    std::cout << "| ";
+    for (auto item :results) {
+        for (auto int_item:item.int_v) {
+            std::cout << int_item << " | ";
+        }
+        for (auto float_item:item.float_v) {
+            std::cout << float_item << " | ";
+        }
+        for (auto string_item:item.char_v) {
+            std::cout << string_item.to_string() << " | ";
+        }
+        std::cout << std::endl;
+    }
 }

@@ -85,6 +85,14 @@ namespace MC {
 
         void insert_value();
 
+        void set_select_all(bool value) {
+            this->is_select_all = value;
+        }
+
+        void execute_select();
+
+        void print_them(std::vector<Record> results);
+
         void show_table_info(std::string table_name);
 
     private:
@@ -103,6 +111,7 @@ namespace MC {
         std::string where_cloumn;
         std::string where_operator;
         std::string where_value;
+        bool is_select_all;
 
         std::size_t chars = 0;
         std::size_t words = 0;

@@ -357,6 +357,23 @@ FileHandler::interval_search(int pos, std::string value, Record sample_record,
     return result;
 }
 
+std::vector<Record> FileHandler::select_all(Record sample_record) {
+    std::vector<Record> result;
+    in_file.clear();
+    in_file.seekg(sizeof(DB_file_header));
+    for (auto i = 0; i < DB_file_header.count; i++) {
+        Record current_record = sample_record;
+        in_file.read(reinterpret_cast<char *>(current_record.int_v.data()),
+                     sizeof(int) * current_record.int_count);
+        in_file.read(reinterpret_cast<char *>(current_record.float_v.data()),
+                     sizeof(float) * current_record.float_count);
+        in_file.read(reinterpret_cast<char *>(current_record.char_v.data()),
+                     sizeof(char[255]) * current_record.char_count);
+        result.push_back(current_record);
+    }
+    return result;
+}
+
 
 //std::string FileHandler::search_data(Record &record) {
 //    std::string result;

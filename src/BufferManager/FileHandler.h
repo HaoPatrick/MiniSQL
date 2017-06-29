@@ -95,6 +95,8 @@ public:
     interval_search(int pos, std::string value, Record sample_record,
                     std::function<bool(FixString, std::string)> func);
 
+    std::vector<Record> select_all(Record sample_record);
+
     BTree<int> build_tree();
 
     BTree<int> build_tree(unsigned int, Record);
