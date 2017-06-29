@@ -24,6 +24,11 @@ public:
                       std::vector<unsigned int> type_count,
                       std::vector<std::string> attr_names);
 
+    void insert_value(std::string table_name,
+                      std::vector<int> int_values,
+                      std::vector<float> float_values,
+                      std::vector<std::string> string_value);
+
     Catalog load_table(std::string table_name);
 
 

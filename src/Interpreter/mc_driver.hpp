@@ -83,6 +83,8 @@ namespace MC {
 
         void create_table();
 
+        void insert_value();
+
         void show_table_info(std::string table_name);
 
     private:

@@ -14,6 +14,13 @@ void API::create_table(std::string table_name,
         catalog.attr_names[i] = attr_names[i];
     }
     file.write_catalog(catalog);
+
+    DBHeader header;
+    strncpy(header.db_name, table_name.c_str(), sizeof(header.db_name) - 1);
+    header.type = table_type;
+    header.count = 0;
+    header.check_value = 42;
+    FileHandler db_file("table_" + table_name + ".hlh", header);
 }
 
 Catalog API::load_table(std::string table_name) {
@@ -42,6 +49,29 @@ void API::create_index(std::string index_name,
     FileHandler index_file("index_" + index_name + ".hlh",
                            FileType(index_type));
     index_file.write_tree(tree);
+}
+
+void API::insert_value(std::string table_name, std::vector<int> int_values, std::vector<float> float_values,
+                       std::vector<std::string> string_value) {
+    Catalog catalog = this->load_table(table_name);
+    if (catalog.int_count != int_values.size() ||
+        catalog.float_count != float_values.size() ||
+        catalog.char_count != string_value.size()) {
+        return;
+    }
+    std::vector<FixString> fix_string_values;
+    for (auto item:string_value) {
+        fix_string_values.push_back(FixString(item));
+    }
+    Record item_to_add(catalog);
+    item_to_add.int_v = int_values;
+    item_to_add.float_v = float_values;
+    item_to_add.char_v = fix_string_values;
+
+    FileHandler db_file("table_" + table_name + ".hlh");
+    db_file.insert_record(item_to_add);
+    // Debug
+//    std::cout<<"OK";
 }
 
 

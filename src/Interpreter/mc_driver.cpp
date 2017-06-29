@@ -201,3 +201,12 @@ void MC::MC_Driver::show_table_info(std::string table_name) {
     }
     std::cout << std::endl;
 }
+
+void MC::MC_Driver::insert_value() {
+    API table;
+    table.insert_value(this->table_name,
+                       this->int_values,
+                       this->float_values,
+                       this->string_values);
+    std::cout<<"OK";
+}

@@ -406,13 +406,13 @@ delete_stmt: DELETE delete_opts
 
    /* statements: insert statement */
 
-stmt: insert_stmt { driver.emit("STMT"); }
+stmt: insert_stmt { driver.emit("STMT");driver.insert_value(); }
    ;
 
 insert_stmt: INSERT insert_opts opt_into NAME
      opt_col_names
      VALUES insert_vals_list
-      { driver.emit("INSERTVALS %d %d %s");driver.set_column_name($4); }
+      { driver.emit("INSERTVALS %d %d %s");driver.set_table_name($4); }
    ;
 
 
