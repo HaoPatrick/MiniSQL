@@ -76,7 +76,7 @@ public:
     std::vector<FixString> attr_names;
 
     unsigned int delete_count;
-    std::vector<int> deleted_pos;
+    std::vector<unsigned int> deleted_pos;
 
     FixString table_name;
 

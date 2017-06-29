@@ -51,7 +51,8 @@ TEST_CASE("Write and Load catalog", "[Catalog]") {
 
     aa.write_catalog(catalog);
 
-    Catalog result_catalog = aa.load_catalog();
+    FileHandler new_cata_file("catalog.hlh");
+    Catalog result_catalog = new_cata_file.load_catalog();
     CHECK(result_catalog.table_name.to_string() == "test table");
     CHECK(result_catalog.attr_names[0].to_string() == "int 0");
     CHECK(result_catalog.int_count == 2);
@@ -66,14 +67,19 @@ TEST_CASE("Catalog and Record Test", "[Catalog]") {
 //    test_header.float_count = 1;
 //    test_header.char_count = 1;
     test_header.check_value = 42;
-    FileHandler aa("new.hlh", test_header);
+    FileHandler db_file("table_test.hlh", test_header);
 
+    test_header.count = 1;
+    test_header.type = catalog_type;
+    FileHandler cata_file("catalog_test.hlh", test_header);
     Catalog catalog(2, 1, 1);
     catalog.table_name = "test table";
     catalog.attr_names[0] = "int 0";
     catalog.attr_names[1] = "int 1";
     catalog.attr_names[2] = "float 0";
     catalog.attr_names[3] = "char 0";
+    catalog.delete_count=0;
+    cata_file.write_catalog(catalog);
 
     Record record(catalog);
     record.int_v[0] = 42;
@@ -83,68 +89,74 @@ TEST_CASE("Catalog and Record Test", "[Catalog]") {
     record.char_v[0] = FixString("Hello hlh!");
 
 
-    aa.write_sample_data(record, 30);
+    db_file.write_sample_data(record, 30);
 
     Record result_record(catalog);
-    std::string result_string = aa.read_data(3, record);
+    std::string result_string = db_file.read_data(3, record);
     CHECK(result_string == "3 24 3.010000 Hello hlh! ");
-    result_string = aa.read_data(23, record);
+    result_string = db_file.read_data(23, record);
     CHECK(result_string == "23 24 23.010000 Hello hlh! ");
 
     bool search_result;
+    SECTION("Delete Test") {
+        cata_file.delete_record(5);
+        FileHandler new_cata_file("catalog_test.hlh");
+        Catalog new_catalog = new_cata_file.load_catalog();
+        CHECK(new_catalog.deleted_pos[0] == 5);
+    }
     SECTION("Linear int search") {
-        search_result = aa.linear_search(result_record, 0, 10);
+        search_result = db_file.linear_search(result_record, 0, 10);
         CHECK(result_record.int_v[0] == 10);
         CHECK(search_result);
 
-        search_result = aa.linear_search(result_record, 0, 23);
+        search_result = db_file.linear_search(result_record, 0, 23);
         CHECK(result_record.int_v[0] == 23);
         CHECK(search_result);
     }
 
     SECTION("Linear float search") {
-        search_result = aa.linear_search(result_record, 0, (float) 10.01);
+        search_result = db_file.linear_search(result_record, 0, (float) 10.01);
         CHECK(result_record.float_v[0] == (float) 10.01);
         CHECK(search_result);
 
-        search_result = aa.linear_search(result_record, 0, (float) 23.01);
+        search_result = db_file.linear_search(result_record, 0, (float) 23.01);
         CHECK(result_record.float_v[0] == (float) 23.01);
         CHECK(search_result);
     }
     SECTION("Linear string search") {
-        search_result = aa.linear_search(result_record, 0, "Hello hlh!");
+        search_result = db_file.linear_search(result_record, 0, "Hello hlh!");
         CHECK(result_record.int_v[0] == 0);
         CHECK(search_result);
     }
 
     SECTION("Interval search int") {
-        std::vector<Record> result = aa.interval_search(0, 3, result_record, std::less<int>());
+        std::vector<Record> result = db_file.interval_search(0, 3, result_record, std::less<int>());
         CHECK(result.size() == 3);
 
-        result = aa.interval_search(0, 3, result_record, std::less_equal<int>());
+        result = db_file.interval_search(0, 3, result_record, std::less_equal<int>());
         CHECK(result.size() == 4);
-        result = aa.interval_search(0, 3, result_record, std::greater<int>());
+        result = db_file.interval_search(0, 3, result_record, std::greater<int>());
         CHECK(result.size() == 26);
-        result = aa.interval_search(0, 3, result_record, std::greater_equal<int>());
+        result = db_file.interval_search(0, 3, result_record, std::greater_equal<int>());
         CHECK(result.size() == 27);
     }
     SECTION("Interval search float") {
-        std::vector<Record> result = aa.interval_search(0, (float) 3.01, result_record, std::less<float>());
+        std::vector<Record> result = db_file.interval_search(0, (float) 3.01, result_record, std::less<float>());
         CHECK(result.size() == 3);
 
-        result = aa.interval_search(0, (float) 3.01, result_record, std::less_equal<float>());
+        result = db_file.interval_search(0, (float) 3.01, result_record, std::less_equal<float>());
         CHECK(result.size() == 4);
-        result = aa.interval_search(0, (float) 3.01, result_record, std::greater<float>());
+        result = db_file.interval_search(0, (float) 3.01, result_record, std::greater<float>());
         CHECK(result.size() == 26);
-        result = aa.interval_search(0, (float) 3.01, result_record, std::greater_equal<float>());
+        result = db_file.interval_search(0, (float) 3.01, result_record, std::greater_equal<float>());
         CHECK(result.size() == 27);
     }
 
     record.int_v[0] = 1111;
     record.float_v[0] = 2.718;
     record.char_v[0] = FixString("Great WBX");
-    aa.insert_record(record);
-    result_string = aa.read_data(31, record);
+    db_file.insert_record(record);
+    result_string = db_file.read_data(31, record);
     CHECK(result_string == "1111 24 2.718000 Great WBX ");
 }
 

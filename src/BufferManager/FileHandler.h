@@ -117,6 +117,8 @@ public:
 
     void insert_record(Record);
 
+    void delete_record(unsigned int index);
+
 private:
     DBHeader DB_file_header;
     bool valid;

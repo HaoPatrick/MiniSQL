@@ -81,7 +81,7 @@ void FileHandler::write_tree(BTree<int> b_tree) {
 }
 
 void FileHandler::write_catalog(Catalog catalog) {
-    std::ofstream new_file(file_path, std::ios::binary);
+    std::ofstream new_file(file_path, std::ios::out | std::ios::binary);
     new_file.write(reinterpret_cast<char *>(&DB_file_header), sizeof(DB_file_header));
     new_file.write(reinterpret_cast<char *>(
                            &catalog.int_count), sizeof(unsigned int));
@@ -90,15 +90,14 @@ void FileHandler::write_catalog(Catalog catalog) {
     new_file.write(reinterpret_cast<char *>(
                            &catalog.char_count), sizeof(unsigned int));
     new_file.write(reinterpret_cast<char *>(
-                           &catalog.char_count), sizeof(unsigned int));
+                           &catalog.delete_count), sizeof(unsigned int));
 
     new_file.write(reinterpret_cast<char *>(
                            &catalog.table_name), sizeof(catalog.table_name));
     new_file.write(reinterpret_cast<char *>(
                            catalog.attr_names.data()), sizeof(FixString) * catalog.attr_names.size());
     new_file.write(reinterpret_cast<char *>(
-                           catalog.deleted_pos.data()), sizeof(int) * catalog.delete_count);
-
+                           catalog.deleted_pos.data()), sizeof(unsigned int) * catalog.deleted_pos.size());
 //    new_file.write(reinterpret_cast<char *>(&catalog), sizeof(catalog));
     new_file.close();
 }
@@ -119,9 +118,9 @@ Catalog FileHandler::load_catalog() {
                          &catalog.table_name), sizeof(catalog.table_name));
     in_file.read(reinterpret_cast<char *>(
                          catalog.attr_names.data()), sizeof(FixString) * catalog.attr_names.size());
+//    catalog.deleted_pos.resize(catalog.delete_count);
     in_file.read(reinterpret_cast<char *>(
-                         catalog.deleted_pos.data()), sizeof(int) * catalog.delete_count);
-
+                         catalog.deleted_pos.data()), sizeof(unsigned int) * catalog.deleted_pos.size());
 //    in_file.read(reinterpret_cast<char *>(&result), sizeof(result));
     return catalog;
 }
@@ -381,6 +380,16 @@ std::vector<Record> FileHandler::select_all(Record sample_record) {
         result.push_back(current_record);
     }
     return result;
+}
+
+
+//Delete can only perform on catalog
+void FileHandler::delete_record(unsigned int index) {
+    FileHandler new_temp(this->file_path);
+    Catalog catalog = new_temp.load_catalog();
+    catalog.deleted_pos[catalog.delete_count] = index;
+    catalog.delete_count += 1;
+    this->write_catalog(catalog);
 }
 
 

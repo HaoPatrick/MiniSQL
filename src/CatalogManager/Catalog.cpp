@@ -11,9 +11,10 @@ Catalog::Catalog() {
     this->float_count = 0;
     this->char_count = 0;
     this->delete_count = 0;
-    attr_names.clear();
-    attr_names.resize(32);// we only need 32 attributes
-    table_name = "";
+    this->attr_names.clear();
+    this->attr_names.resize(32);// we only need 32 attributes
+    this->deleted_pos.resize(100);
+    this->table_name = "";
 }
 
 Catalog::Catalog(unsigned int int_count, unsigned int float_count, unsigned int char_count) {
@@ -24,6 +25,7 @@ Catalog::Catalog(unsigned int int_count, unsigned int float_count, unsigned int 
     if (int_count + float_count + char_count >= 32) {
         //TODO: attribute overflow
     }
+    this->deleted_pos.resize(100);
     this->attr_names.resize(32);
 }
 
