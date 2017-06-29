@@ -7,9 +7,6 @@ int main(int argc, char *argv[]) {
             sizeof(test_header.db_name) - 1);
     test_header.type = catalog_type;
     test_header.count = 1;
-    test_header.int_count = 2;
-    test_header.float_count = 1;
-    test_header.char_count = 1;
     test_header.check_value = 42;
     FileHandler aa("catalog.hlh", test_header);
 

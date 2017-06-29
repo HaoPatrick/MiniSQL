@@ -8,6 +8,7 @@
 #include <vector>
 #include "../CatalogManager/Catalog.h"
 #include "../BufferManager/FileHandler.h"
+#include "../RecordManager/Record.h"
 //#include <boost/filesystem.hpp>
 
 //namespace fs=boost::filesystem;

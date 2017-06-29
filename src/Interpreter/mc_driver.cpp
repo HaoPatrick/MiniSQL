@@ -176,16 +176,28 @@ void MC::MC_Driver::debug_info() {
 }
 
 void MC::MC_Driver::create_table() {
-//    API table;
-//    std::vector<unsigned int> type_count;
-//    unsigned int int_count = (unsigned int) std::count(
-//            this->types.begin(), this->types.end(), attr_int);
-//    unsigned int float_count = (unsigned int) std::count(
-//            this->types.begin(), this->types.end(), attr_float);
-//    unsigned int string_count = (unsigned int) std::count(
-//            this->types.begin(), this->types.end(), attr_char);
-//    type_count.push_back(int_count);
-//    type_count.push_back(float_count);
-//    type_count.push_back(string_count);
-//    table.create_table(this->table_name, type_count, this->column_names);
+    API table;
+    std::vector<unsigned int> type_count;
+    unsigned int int_count = (unsigned int) std::count(
+            this->types.begin(), this->types.end(), attr_int);
+    unsigned int float_count = (unsigned int) std::count(
+            this->types.begin(), this->types.end(), attr_float);
+    unsigned int string_count = (unsigned int) std::count(
+            this->types.begin(), this->types.end(), attr_char);
+    type_count.push_back(int_count);
+    type_count.push_back(float_count);
+    type_count.push_back(string_count);
+    table.create_table(this->table_name, type_count, this->column_names);
+    // Debug
+//    this->show_table_info(this->table_name);
+}
+
+void MC::MC_Driver::show_table_info(std::string table_name) {
+    API table;
+    Catalog catalog = table.load_table(table_name);
+    std::cout << catalog.table_name.to_string();
+    for (auto item :catalog.attr_names) {
+        std::cout << item.to_string() + " ";
+    }
+    std::cout << std::endl;
 }

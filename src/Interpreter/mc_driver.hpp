@@ -6,7 +6,7 @@
 #include <istream>
 #include <vector>
 
-//#include "../API/API.h"
+#include "../API/API.h"
 #include "../CatalogManager/Catalog.h"
 #include "mc_scanner.hpp"
 #include "mc_parser.tab.hh"
@@ -82,6 +82,8 @@ namespace MC {
         std::ostream &print(std::ostream &stream);
 
         void create_table();
+
+        void show_table_info(std::string table_name);
 
     private:
 
