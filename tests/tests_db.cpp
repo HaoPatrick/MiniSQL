@@ -9,7 +9,7 @@
 #include "catch.hpp"
 
 TEST_CASE("Test API", "[API]") {
-    API instance;
+    API instance("db_api");
     std::string table_name = "db_api";
     std::vector<unsigned int> counts;
     counts.push_back(2);

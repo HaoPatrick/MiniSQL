@@ -219,8 +219,8 @@ void MC::MC_Driver::execute_select() {
 }
 
 void MC::MC_Driver::print_them(std::vector<Record> results) {
-    std::cout << "| ";
     for (auto item :results) {
+        std::cout << "| ";
         for (auto int_item:item.int_v) {
             std::cout << int_item << " | ";
         }

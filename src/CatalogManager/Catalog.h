@@ -75,6 +75,9 @@ public:
 //    unsigned int deleted_index[100];
     std::vector<FixString> attr_names;
 
+    unsigned int delete_count;
+    std::vector<int> deleted_pos;
+
     FixString table_name;
 
     size_t size();

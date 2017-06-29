@@ -32,7 +32,7 @@ struct DBHeader {
 //    unsigned int char_count;
     unsigned int check_value;
     unsigned int delete_pos;
-
+//    int deleted[100];
 //    std::vector<unsigned int> delete_index;
 //
 //    DBHeader() {

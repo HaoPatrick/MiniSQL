@@ -90,9 +90,14 @@ void FileHandler::write_catalog(Catalog catalog) {
     new_file.write(reinterpret_cast<char *>(
                            &catalog.char_count), sizeof(unsigned int));
     new_file.write(reinterpret_cast<char *>(
+                           &catalog.char_count), sizeof(unsigned int));
+
+    new_file.write(reinterpret_cast<char *>(
                            &catalog.table_name), sizeof(catalog.table_name));
     new_file.write(reinterpret_cast<char *>(
                            catalog.attr_names.data()), sizeof(FixString) * catalog.attr_names.size());
+    new_file.write(reinterpret_cast<char *>(
+                           catalog.deleted_pos.data()), sizeof(int) * catalog.delete_count);
 
 //    new_file.write(reinterpret_cast<char *>(&catalog), sizeof(catalog));
     new_file.close();
@@ -109,9 +114,13 @@ Catalog FileHandler::load_catalog() {
     in_file.read(reinterpret_cast<char *>(
                          &catalog.char_count), sizeof(unsigned int));
     in_file.read(reinterpret_cast<char *>(
+                         &catalog.delete_count), sizeof(unsigned int));
+    in_file.read(reinterpret_cast<char *>(
                          &catalog.table_name), sizeof(catalog.table_name));
     in_file.read(reinterpret_cast<char *>(
                          catalog.attr_names.data()), sizeof(FixString) * catalog.attr_names.size());
+    in_file.read(reinterpret_cast<char *>(
+                         catalog.deleted_pos.data()), sizeof(int) * catalog.delete_count);
 
 //    in_file.read(reinterpret_cast<char *>(&result), sizeof(result));
     return catalog;
