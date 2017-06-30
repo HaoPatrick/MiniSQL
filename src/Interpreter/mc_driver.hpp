@@ -89,6 +89,11 @@ namespace MC {
             this->is_select_all = value;
         }
 
+        void set_compare_func(int compare_func) {
+            this->has_compare = true;
+            this->compare_func = compare_func;
+        }
+
         void execute_select();
 
         void print_them(std::vector<Record> results);
@@ -112,6 +117,8 @@ namespace MC {
         std::string where_operator;
         std::string where_value;
         bool is_select_all;
+        bool has_compare;
+        int compare_func;
 
         std::size_t chars = 0;
         std::size_t words = 0;

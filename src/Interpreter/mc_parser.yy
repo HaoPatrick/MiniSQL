@@ -314,24 +314,9 @@
 
 %%
 
-// list_option : END | list END;
 
-// list
-//   : item
-//   | list item
-//   ;
-
-// item
-//   : UPPER   { driver.add_upper(); }
-//   | LOWER   { driver.add_lower(); }
-//   | WORD    { driver.add_word( $1 ); }
-//   | NEWLINE { driver.add_newline(); }
-//   | CHAR    { driver.add_char(); }
-//   | HLH     {driver.test_display($1); }
-//   ;
-
-stmt_list: stmt ';' {driver.debug_info();driver.clear_all(); std::cout<<"> ";}
-  | stmt_list stmt ';' {driver.debug_info();driver.clear_all(); std::cout<<"> ";}
+stmt_list: stmt ';' {driver.clear_all(); std::cout<<"> ";}
+  | stmt_list stmt ';' {driver.clear_all(); std::cout<<"> ";}
   ;
 
 stmt: select_stmt { driver.emit("STMT"); driver.execute_select();
@@ -374,7 +359,7 @@ table_factor:
 
    /* statements: delete statement */
 
-stmt: delete_stmt { driver.emit("STMT"); }
+stmt: delete_stmt { driver.emit("STMT"); driver.debug_info();}
    ;
 
 delete_stmt: DELETE delete_opts FROM NAME
@@ -527,7 +512,7 @@ data_type:
 
    /**** expressions ****/
 
-expr: NAME          { driver.emit("NAME"); }
+expr: NAME          { driver.emit("NAME");driver.set_column_name($1); }
    | USERVAR         { driver.emit("USERVAR");  }
    | NAME '.' NAME { driver.emit("FIELDNAME "); }
    | STRING        { driver.emit("STRING");driver.add_value($1); }
@@ -546,7 +531,7 @@ expr: expr '+' expr { driver.emit("ADD"); }
    | expr ANDOP expr { driver.emit("AND"); }
    | expr OR expr { driver.emit("OR"); }
    | expr XOR expr { driver.emit("XOR"); }
-   | expr COMPARISON expr { driver.emit("CMP"); }
+   | expr COMPARISON expr { driver.emit("CMP");driver.set_compare_func($2); }
    | expr COMPARISON '(' select_stmt ')' {driver. emit("CMPSELECT"); }
    | NOT expr { driver.emit("NOT"); }
    | '!' expr { driver.emit("NOT"); }

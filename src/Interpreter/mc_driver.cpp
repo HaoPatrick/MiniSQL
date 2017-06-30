@@ -156,11 +156,12 @@ void MC::MC_Driver::debug_info() {
     for (auto value:this->column_names) {
         std::cout << value + " ";
     }
+    std::cout << " | ";
     std::cout << "type names: ";
     for (auto value:this->types) {
         std::cout << value << " ";
     }
-
+    std::cout << " | ";
     std::cout << "values:";
     for (auto value:this->int_values) {
         std::cout << value << " ";
@@ -171,6 +172,10 @@ void MC::MC_Driver::debug_info() {
     for (auto value:this->string_values) {
         std::cout << value << " ";
     }
+
+    std::cout<<"\n | ";
+    std::cout<<"where "+this->column_name+" "<<this->compare_func;;
+
     std::cout << std::endl;
 //    column_names.data() << " - " << types.data() << std::endl;
 }
