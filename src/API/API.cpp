@@ -81,6 +81,9 @@ std::vector<Record> API::select_all() {
     Catalog catalog = this->load_table(this->table_name);
     Record sample_record(catalog);
     result = db_file.select_all(sample_record);
+    for (int i = 0; i < catalog.delete_count; i++) {
+        result.erase(result.begin() + catalog.deleted_pos[i]);
+    }
     return result;
 }
 

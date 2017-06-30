@@ -379,7 +379,7 @@ stmt: delete_stmt { driver.emit("STMT"); }
 
 delete_stmt: DELETE delete_opts FROM NAME
     opt_where 
-                  { driver.emit("DELETEONE"); }
+                  { driver.emit("DELETEONE");driver.set_table_name($4); }
 ;
 
 delete_opts: /* nil */ { $$ = 0; }
