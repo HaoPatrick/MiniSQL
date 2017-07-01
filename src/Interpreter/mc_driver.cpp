@@ -173,8 +173,8 @@ void MC::MC_Driver::debug_info() {
         std::cout << value << " ";
     }
 
-    std::cout<<"\n | ";
-    std::cout<<"where "+this->column_name+" "<<this->compare_func;;
+    std::cout << "\n | ";
+    std::cout << "where " + this->column_name + " " << this->compare_func;;
 
     std::cout << std::endl;
 //    column_names.data() << " - " << types.data() << std::endl;
@@ -237,4 +237,10 @@ void MC::MC_Driver::print_them(std::vector<Record> results) {
         }
         std::cout << std::endl;
     }
+}
+
+void MC::MC_Driver::execute_delete() {
+    API table(this->table_name);
+    table.delete_value(column_name, compare_func, int_values, float_values, string_values);
+
 }

@@ -359,7 +359,7 @@ table_factor:
 
    /* statements: delete statement */
 
-stmt: delete_stmt { driver.emit("STMT"); driver.debug_info();}
+stmt: delete_stmt { driver.emit("STMT"); driver.debug_info();driver.execute_delete();}
    ;
 
 delete_stmt: DELETE delete_opts FROM NAME

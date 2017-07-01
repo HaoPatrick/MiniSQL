@@ -84,7 +84,7 @@ public:
 
     ptrdiff_t get_pos(FixString);
 
-    ptrdiff_t get_pos(std::string);
+    int get_pos(std::string);
 
     attr_type query_type(std::string);
 

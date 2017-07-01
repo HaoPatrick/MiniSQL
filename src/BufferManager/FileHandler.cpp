@@ -302,10 +302,10 @@ bool FileHandler::linear_search(Record &record, int pos, std::string value) {
 }
 
 
-std::vector<Record>
+std::vector<std::pair<Record, int>>
 FileHandler::interval_search(
         int pos, int value, Record sample_record, std::function<bool(int, int)> func) {
-    std::vector<Record> result;
+    std::vector<std::pair<Record, int>> result;
     in_file.clear();
     in_file.seekg(sizeof(DB_file_header));
     for (auto i = 0; i < DB_file_header.count; i++) {
@@ -317,16 +317,16 @@ FileHandler::interval_search(
         in_file.read(reinterpret_cast<char *>(current_record.char_v.data()),
                      sizeof(char[255]) * current_record.char_count);
         if (func(current_record.int_v[pos], value)) {
-            result.push_back(current_record);
+            result.push_back(std::pair<Record, int>(current_record, i));
         }
     }
     return result;
 }
 
-std::vector<Record>
+std::vector<std::pair<Record, int>>
 FileHandler::interval_search(
         int pos, float value, Record sample_record, std::function<bool(float, float)> func) {
-    std::vector<Record> result;
+    std::vector<std::pair<Record, int>> result;
     in_file.clear();
     in_file.seekg(sizeof(DB_file_header));
     for (auto i = 0; i < DB_file_header.count; i++) {
@@ -338,7 +338,7 @@ FileHandler::interval_search(
         in_file.read(reinterpret_cast<char *>(current_record.char_v.data()),
                      sizeof(char[255]) * current_record.char_count);
         if (func(current_record.float_v[pos], value)) {
-            result.push_back(current_record);
+            result.push_back(std::pair<Record, int>(current_record, i));
         }
     }
     return result;

@@ -86,9 +86,9 @@ public:
 
     bool linear_search(Record &record, int pos, std::string value);
 
-    std::vector<Record> interval_search(int pos, int value, Record sample_record, std::function<bool(int, int)> func);
+    std::vector<std::pair<Record, int>> interval_search(int pos, int value, Record sample_record, std::function<bool(int, int)> func);
 
-    std::vector<Record>
+    std::vector<std::pair<Record, int>>
     interval_search(int pos, float value, Record sample_record, std::function<bool(float, float)> func);
 
     std::vector<Record>

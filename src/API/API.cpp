@@ -91,3 +91,47 @@ API::API(std::string table_name) {
     this->table_name = table_name;
 }
 
+void API::delete_value(std::string column_name, int operation,
+                       std::vector<int> int_values,
+                       std::vector<float> float_values, std::vector<std::string> string_values) {
+    Catalog catalog = this->load_table(table_name);
+    Record sample_record(catalog);
+    int pos = catalog.get_pos(column_name);
+    attr_type column_type = catalog.query_type(column_name);
+    if (pos < 0) {
+        return;
+    }
+
+    std::vector<std::pair<Record, int>> result;
+    FileHandler db_file("table_" + table_name + ".hlh");
+    if (column_type == attr_int) {
+        int value = int_values[0];
+        if (operation == 4) {
+            result = db_file.interval_search(pos, value, sample_record, std::equal_to<int>());
+        } else if (operation == 2) {
+            result = db_file.interval_search(pos, value, sample_record, std::greater<int>());
+        } else if (operation == 1) {
+            result = db_file.interval_search(pos, value, sample_record, std::less<int>());
+        }
+        for (auto item:result) {
+            FileHandler cata_file("catalog_" + table_name + ".hlh");
+            cata_file.delete_record((unsigned int)item.second);
+//            db_file.delete_record((unsigned int) item.second);
+        }
+    } else if (column_type == attr_float) {
+        float value = float_values[0];
+        if (operation == 4) {
+            result = db_file.interval_search(pos, value, sample_record, std::equal_to<int>());
+        } else if (operation == 2) {
+            result = db_file.interval_search(pos, value, sample_record, std::greater<int>());
+        } else if (operation == 1) {
+            result = db_file.interval_search(pos, value, sample_record, std::less<int>());
+        }
+        for (auto item:result) {
+            db_file.delete_record((unsigned int) item.second);
+        }
+    } else if (column_type == attr_char) {
+        std::string value = string_values[0];
+    }
+}
+

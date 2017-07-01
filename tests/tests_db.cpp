@@ -130,7 +130,7 @@ TEST_CASE("Catalog and Record Test", "[Catalog]") {
     }
 
     SECTION("Interval search int") {
-        std::vector<Record> result = db_file.interval_search(0, 3, result_record, std::less<int>());
+        std::vector<std::pair<Record, int>> result = db_file.interval_search(0, 3, result_record, std::less<int>());
         CHECK(result.size() == 3);
 
         result = db_file.interval_search(0, 3, result_record, std::less_equal<int>());
@@ -141,7 +141,7 @@ TEST_CASE("Catalog and Record Test", "[Catalog]") {
         CHECK(result.size() == 27);
     }
     SECTION("Interval search float") {
-        std::vector<Record> result = db_file.interval_search(0, (float) 3.01, result_record, std::less<float>());
+        std::vector<std::pair<Record, int>> result = db_file.interval_search(0, (float) 3.01, result_record, std::less<float>());
         CHECK(result.size() == 3);
 
         result = db_file.interval_search(0, (float) 3.01, result_record, std::less_equal<float>());

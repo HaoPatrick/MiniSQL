@@ -49,13 +49,25 @@ ptrdiff_t Catalog::get_pos(FixString attr_name) {
            this->attr_names.begin();
 }
 
-ptrdiff_t Catalog::get_pos(std::string attr_name) {
-    return std::find(this->attr_names.begin(), this->attr_names.end(),
-                     attr_name) - this->attr_names.begin();
+int Catalog::get_pos(std::string attr_name) {
+//    attr_type column_type = this->query_type(attr_name);
+    auto diff = std::find(this->attr_names.begin(), this->attr_names.end(),
+                          attr_name) - this->attr_names.begin();
+    if (diff < int_count) {
+        return diff;
+    } else if (diff < int_count + float_count) {
+        return diff - int_count;
+    } else if (diff < int_count + float_count + char_count) {
+        return diff - int_count - float_count;
+    } else {
+        return -1;
+    }
+
 }
 
 attr_type Catalog::query_type(std::string attr_name) {
-    ptrdiff_t pos = this->get_pos(attr_name);
+    auto pos = std::find(this->attr_names.begin(), this->attr_names.end(),
+                          attr_name) - this->attr_names.begin();
     attr_type result_type;
     if (pos >= 0 && pos < int_count) {
         result_type = attr_int;

@@ -95,6 +95,8 @@ namespace MC {
         }
 
         void execute_select();
+        
+        void execute_delete();
 
         void print_them(std::vector<Record> results);
 

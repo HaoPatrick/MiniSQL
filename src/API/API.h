@@ -31,6 +31,12 @@ public:
                       std::vector<float> float_values,
                       std::vector<std::string> string_value);
 
+    void delete_value(std::string column_name,
+                      int operation,
+                      std::vector<int> int_values,
+                      std::vector<float> float_values,
+                      std::vector<std::string> string_values);
+
     Catalog load_table(std::string table_name);
 
 
