@@ -4,7 +4,7 @@
 
 组员&队长：郝翔鹏 3150102255
 
-### HAO XIANGPENG
+HAO XIANGPENG
 
 
 ## Table of Contents
@@ -50,9 +50,11 @@
 
 ### CMakeLists 的一些亮点
 
-#### 由于项目庞大，各个模块错综复杂，交替引用，还引入了第三方库，如果每次都手动编译肯定不现实。即使使用常规的编译手段，也会因为反复编译而浪费大量时间。因此在 CMakeLists 中将不同的模块生成为不同的lib，然后对不同的模块测试时，只需要编译已经修改过的模块，然后将未修改的模块链接起来即可。如下所示：
+由于项目庞大，各个模块错综复杂，交替引用，还引入了第三方库，如果每次都手动编译肯定不现实。即使使用常规的编译手段，也会因为反复编译而浪费大量时间。因此在 CMakeLists 中将不同的模块生成为不同的lib，然后对不同的模块测试时，只需要编译已经修改过的模块，然后将未修改的模块链接起来即可。如下所示：
 
-```cpp add_library(lib_tree src/IndexManager/BTree.h src/IndexManager/BTree.cpp)
+```cpp 
+
+add_library(lib_tree src/IndexManager/BTree.h src/IndexManager/BTree.cpp)
 
 add_library(lib_catch tests/test_catch.cpp)
 
