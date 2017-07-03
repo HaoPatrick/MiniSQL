@@ -32,21 +32,21 @@ HAO XIANGPENG
 
 ### 注意事项
 
-1. 本项目使用了Flex + Bison 作为语法分析器和词法分析器的生成工具，因此依赖这两个工
+1. 本项目使用了``Flex`` + ``Bison`` 作为语法分析器和词法分析器的生成工具，因此依赖这两个工
     具。
-    其中Bison 的版本需要大于3. 0 ，因为低于这个版本的Bison生成的C++ 代码存在一些已知
-    的issue。在大多数的Linux发行版中，Bison已经预装并且版本大于3. 0 （比如Ubuntu
-    16. 04 LTS和Arch Linux），如果你是用的是CentOS，可能可以考虑更换发行版。
-2. 项目的默认编译工具是 cmake，已经提供可以使用的 cmakelists.txt 文件，如果环境正确，
-    可以直接编译。其中对于Interpreter还单独提供了Makefile，但这个版本不保证能够无
+    其中``Bison`` 的版本需要大于`3.0` ，因为低于这个版本的`Bison`生成的C++ 代码存在一些已知
+    的`issue`。在大多数的`Linux`发行版中，``Bison``已经预装并且版本大于3. 0 （比如`Ubuntu
+    16. 04 LTS`和`Arch Linux`），如果你是用的是`CentOS`，可能可以考虑更换发行版。
+2. 项目的默认编译工具是 `cmake`，已经提供可以使用的 `cmakelists.txt` 文件，如果环境正确，
+    可以直接编译。其中对于Interpreter还单独提供了`Makefile`，但这个版本不保证能够无
     bug 运行。
-3. 如果你在Windows下编译，请使用MinGW 或者Cygwin 等工具，不保证msvc能够编译通
-    过。同时需要手动安装 flex 和 bison，并且将正确的头文件放入相应工具链的 include 文件
+3. 如果你在Windows下编译，请使用 `MinGW` 或者 `Cygwin` 等工具，不保证msvc能够编译通
+    过。同时需要手动安装 ``Flex`` 和 ``Bison``，并且将正确的头文件放入相应工具链的 `include` 文件
     夹中。
-4. 使用了Catch作为测试框架，为了便于编译，已经将源代码放在tests/cach.hpp，这些代码
-    全部是catch作者的功劳，本项目只是引用它来做测试，是便于开发的工具，事实上也与
+4. 使用了`Catch`作为测试框架，为了便于编译，已经将源代码放在`tests/cach.hpp`，这些代码
+    全部是`catch`作者的功劳，本项目只是引用它来做测试，是便于开发的工具，事实上也与
     MiniSQL本身无关。如有查重，还请留意。
-5. 项目开发环境：Windows 10 1703 + MinGW + WSL(Ubuntu 16.04 LTS)。
+5. 项目开发环境：`Windows 10 1703 + MinGW + WSL(Ubuntu 16.04 LTS)`。
 
 ### CMakeLists 的一些亮点
 
@@ -85,11 +85,11 @@ Interpreter 分为 6 个文件，driver类 2 个文件，scanner 一个文件，
 
 其中driver负责与API交互，同时负责处理从词法分析器中传入的参数。
 
-Scanner 使用flex 的C++模块，配合lexer和parser ，未固定模板。
+Scanner 使用`Flex` 的C++模块，配合lexer和parser ，未固定模板。
 
 ### Lexer词法分析器
 
-Lexer是主词法分析器，使用 Flex 通过正则表达式对用户输入的SQL语句进行tokenize，同时进行
+Lexer是主词法分析器，使用 `Flex` 通过正则表达式对用户输入的SQL语句进行tokenize，同时进行
 基础的语法检查和类型判断。在token列表中，加入了SQL标准的所有关键词，为日后使用，本
 项目目前仅支持MiniSQL所要求的几个token。以下为词法分析器的一部分，主要展示了对整数、
 浮点数和真假值的tokenize。
@@ -107,7 +107,7 @@ FALSE { yylval->build<bool>(false); return token::BOOL; }
 ```
 ### Parser语法分析器
 
-语法分析器是由Bison提供的C++模块，与Flex紧密结合生成SQL语句对应的逆波兰表达式
+语法分析器是由`Bison`提供的C++模块，与`Flex`紧密结合生成SQL语句对应的逆波兰表达式
 （Reverse Polish Notation, RPN）。
 
 同时使用上下文无关文法（Context-Free Grammar, CFG）来把从词法分析器中传入的一系列Token
@@ -188,7 +188,7 @@ create_index_stmt: CREATE KEY NAME ON NAME
 ;
 ```
 
-以上代码为Bison中用于处理生成index的代码，bison对C++的支持很友好，因此生成的C++代码
+以上代码为`Bison`中用于处理生成index的代码，`Bison`对C++的支持很友好，因此生成的C++代码
 可以直接调用其他类中的代码。这里我们已经使用了MC命名空间，如下所示：
 ```cpp
 %define api.namespace {MC}

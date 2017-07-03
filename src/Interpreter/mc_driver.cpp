@@ -59,11 +59,11 @@ void MC::MC_Driver::parse_helper(std::istream &stream) {
 
 
 void MC::MC_Driver::create_index(std::string index_name, std::string table_name, std::string column_name) {
-    std::cout << "create index_type " << index_name << " on " << table_name << "(" << column_name << ")" << std::endl;
+    std::cout << "index " << index_name << " created." << std::endl;
 }
 
 void MC::MC_Driver::drop_index(std::string index_name) {
-    std::cout << "index_type " << index_name << " dropped" << std::endl;
+    std::cout << "index " << index_name << " dropped." << std::endl;
 }
 
 void MC::MC_Driver::drop_table(std::string table_name) {

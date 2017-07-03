@@ -31,6 +31,10 @@ namespace MC {
          */
         void parse(std::istream &iss);
 
+        bool out_to_file;
+
+        std::string out_file_name;
+
         void add_upper();
 
         void add_lower();
@@ -95,7 +99,7 @@ namespace MC {
         }
 
         void execute_select();
-        
+
         void execute_delete();
 
         void print_them(std::vector<Record> results);
