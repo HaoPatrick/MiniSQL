@@ -319,7 +319,7 @@ stmt_list: stmt ';' {driver.clear_all(); std::cout<<"> ";}
   | stmt_list stmt ';' {driver.clear_all(); std::cout<<"> ";}
   ;
 
-stmt: select_stmt { driver.emit("STMT"); driver.execute_select();
+stmt: select_stmt { driver.emit("STMT");driver.debug_info(); driver.execute_select();
                     }
    ;
 
@@ -549,5 +549,5 @@ expr:  expr IS NULLX     { driver.emit("ISNULL"); }
 void 
 MC::MC_Parser::error( const location_type &l, const std::string &err_message )
 {
-   std::cerr << "Error: " << err_message << " at " << l << "\n";
+   std::cout << "Error: " << err_message << " at " << l << "\n";
 }

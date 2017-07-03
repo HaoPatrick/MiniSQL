@@ -122,11 +122,6 @@ namespace MC {
         bool has_compare;
         int compare_func;
 
-        std::size_t chars = 0;
-        std::size_t words = 0;
-        std::size_t lines = 0;
-        std::size_t uppercase = 0;
-        std::size_t lowercase = 0;
         MC::MC_Parser *parser = nullptr;
         MC::MC_Scanner *scanner = nullptr;
 

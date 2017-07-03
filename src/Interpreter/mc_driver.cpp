@@ -52,16 +52,11 @@ void MC::MC_Driver::parse_helper(std::istream &stream) {
     }
     const int accept(0);
     if (parser->parse() != accept) {
-        std::cerr << "Parse failed!!\n";
+        std::cout << "Parse failed!!\n";
     }
     return;
 }
 
-void MC::MC_Driver::add_upper() {
-    uppercase++;
-    chars++;
-    words++;
-}
 
 void MC::MC_Driver::create_index(std::string index_name, std::string table_name, std::string column_name) {
     std::cout << "create index_type " << index_name << " on " << table_name << "(" << column_name << ")" << std::endl;
@@ -76,44 +71,13 @@ void MC::MC_Driver::drop_table(std::string table_name) {
 }
 
 void MC::MC_Driver::emit(const std::string &word) {
-    std::cout << word << std::endl;
+//     std::cout << word << std::endl;
 }
 
-void MC::MC_Driver::add_lower() {
-    lowercase++;
-    chars++;
-    words++;
-}
-
-void MC::MC_Driver::add_word(const std::string &word) {
-    words++;
-    chars += word.length();
-    for (const char &c : word) {
-        if (islower(c)) {
-            lowercase++;
-        } else if (isupper(c)) {
-            uppercase++;
-        }
-    }
-}
-
-void MC::MC_Driver::add_newline() {
-    lines++;
-    chars++;
-}
-
-void MC::MC_Driver::add_char() {
-    chars++;
-}
 
 std::ostream &
 MC::MC_Driver::print(std::ostream &stream) {
-    stream << red << "Results: " << norm << "\n";
-    stream << blue << "Uppercase: " << norm << uppercase << "\n";
-    stream << blue << "Lowercase: " << norm << lowercase << "\n";
-    stream << blue << "Lines: " << norm << lines << "\n";
-    stream << blue << "Words: " << norm << words << "\n";
-    stream << blue << "Characters: " << norm << chars << "\n";
+    stream << red << "Down." << norm << "\n";
     return (stream);
 }
 
@@ -130,6 +94,12 @@ void MC::MC_Driver::clear_all() {
     this->float_values.clear();
     this->int_values.clear();
     this->string_values.clear();
+    this->where_cloumn = "";
+    this->where_operator = "";
+    this->where_value = "";
+    this->is_select_all = false;
+    this->has_compare = false;
+    this->compare_func = -1;
 }
 
 void MC::MC_Driver::add_column(std::string name) {
@@ -218,7 +188,17 @@ void MC::MC_Driver::insert_value() {
 
 void MC::MC_Driver::execute_select() {
     API table(this->table_name);
-    std::vector<Record> result = table.select_all();
+    std::vector<Record> result;
+    if (this->column_name != "") {
+        std::vector<std::pair<Record, int>> temp_result;
+        temp_result = table.select_all(
+                column_name, compare_func, int_values, float_values, string_values);
+        for (auto item:temp_result) {
+            result.push_back(item.first);
+        }
+    } else {
+        result = table.select_all();
+    }
 
     this->print_them(result);
 }
@@ -242,5 +222,4 @@ void MC::MC_Driver::print_them(std::vector<Record> results) {
 void MC::MC_Driver::execute_delete() {
     API table(this->table_name);
     table.delete_value(column_name, compare_func, int_values, float_values, string_values);
-
 }
