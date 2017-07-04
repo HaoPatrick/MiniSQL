@@ -319,7 +319,7 @@ stmt_list: stmt ';' {driver.clear_all(); std::cout<<"> ";}
   | stmt_list stmt ';' {driver.clear_all(); std::cout<<"> ";}
   ;
 
-stmt: select_stmt { driver.emit("STMT");driver.debug_info(); driver.execute_select();
+stmt: select_stmt { driver.emit("STMT"); driver.execute_select();
                     }
    ;
 
@@ -359,7 +359,7 @@ table_factor:
 
    /* statements: delete statement */
 
-stmt: delete_stmt { driver.emit("STMT"); driver.debug_info();driver.execute_delete();}
+stmt: delete_stmt { driver.emit("STMT"); driver.execute_delete();}
    ;
 
 delete_stmt: DELETE delete_opts FROM NAME
