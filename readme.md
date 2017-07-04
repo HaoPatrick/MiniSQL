@@ -2,6 +2,8 @@
 
 # MiniSQL 详细设计报告
 
+[![Build Status](https://travis-ci.org/HaoPatrick/MiniSQL.svg?branch=master)](https://travis-ci.org/HaoPatrick/MiniSQL)
+
 组员&队长：郝翔鹏 3150102255
 
 HAO XIANGPENG
